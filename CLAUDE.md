@@ -57,9 +57,14 @@ queen-bee/
 │   │   ├── queen.md
 │   │   ├── leader.md
 │   │   ├── review-leader.md
-│   │   ├── executor.md
+│   │   ├── worker-base.md              # Worker base context
+│   │   ├── coder.md                    # Worker (coder) context
+│   │   ├── tester.md                   # Worker (tester) context
 │   │   ├── reviewer-base.md
 │   │   ├── code-reviewer.md
+│   │   ├── security-reviewer.md        # Worker (security reviewer) context
+│   │   ├── test-auditor.md             # Worker (test auditor) context
+│   │   ├── default.md                  # Default context
 │   │   ├── log.md                       # Log recording agent context
 │   │   ├── fb.md                        # Self-improvement agent context
 │   │   └── agent-modes.json
@@ -68,9 +73,14 @@ queen-bee/
 │   ├── queen.md                         # Root fallback (English)
 │   ├── leader.md
 │   ├── review-leader.md
+│   ├── worker-base.md                  # Worker base context (root fallback)
+│   ├── coder.md                        # Worker (coder) context (root fallback)
+│   ├── tester.md                       # Worker (tester) context (root fallback)
 │   ├── agent-modes.json                 # Env var → context file mapping
-│   ├── executor.md                      # Worker (coder/tester) context
-│   ├── reviewer-base.md                 # Worker (reviewer) context
+│   ├── reviewer-base.md                 # Worker (reviewer) base context
+│   ├── code-reviewer.md               # Code reviewer context (root fallback)
+│   ├── security-reviewer.md           # Security reviewer context (root fallback)
+│   ├── test-auditor.md                # Test auditor context (root fallback)
 │   ├── log.md                           # Log recording agent context (root fallback)
 │   ├── fb.md                            # Self-improvement agent context (root fallback)
 │   └── default.md                       # Default context (no mode active)
