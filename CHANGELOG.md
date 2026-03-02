@@ -15,6 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 3 hooks: UserPromptSubmit (context injection), Stop (log recording), PostToolUse (checkpoint)
 - Locale support (en, ja) with 4-step context fallback resolution
 - Context fallback system: project local (locale) → project local (root) → package (locale) → package (root)
-- Environment variable chain for dynamic path resolution (QB_SCRIPTS_DIR, QB_CONTEXTS_DIR)
+- Environment variable chain for dynamic path resolution (BO_SCRIPTS_DIR, BO_CONTEXTS_DIR)
 
 [0.1.0]: https://github.com/YuugouOhno/beeops/releases/tag/v0.1.0
