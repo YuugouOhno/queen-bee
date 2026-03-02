@@ -1,0 +1,38 @@
+{
+  "name": "queen-bee",
+  "version": "0.1.0",
+  "description": "3-layer multi-agent orchestration system (Queen → Leader → Worker) powered by tmux",
+  "author": "YuugouOhno",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YuugouOhno/queen-bee.git"
+  },
+  "homepage": "https://github.com/YuugouOhno/queen-bee#readme",
+  "bugs": {
+    "url": "https://github.com/YuugouOhno/queen-bee/issues"
+  },
+  "bin": {
+    "queen-bee": "./bin/queen-bee.js"
+  },
+  "files": [
+    "bin/",
+    "scripts/",
+    "hooks/",
+    "contexts/",
+    "skills/",
+    "command/"
+  ],
+  "keywords": [
+    "multi-agent",
+    "orchestration",
+    "tmux",
+    "automation",
+    "ai-agents",
+    "queen-bee",
+    "claude-code"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}
