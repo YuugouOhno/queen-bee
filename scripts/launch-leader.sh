@@ -257,13 +257,9 @@ tmux set-option -p pane-border-style "fg=colour240" 2>/dev/null || true
 # Signal Queen
 tmux wait-for -S queen-wake 2>/dev/null || true
 
-# Cleanup worktree if leader (after signal)
-if [ -n "\$WORKTREE_PATH" ] && [ -d "\$WORKTREE_PATH" ]; then
-  cd "\$REPO_DIR"
-  # Always remove worktree after completion (changes should be committed)
-  timeout 30 git worktree remove --force "\$WORKTREE_PATH" 2>/dev/null || true
-  git worktree prune 2>/dev/null || true
-fi
+# Note: worktree is intentionally kept alive after Leader completion.
+# The branch is needed for PR review cycles and CI checks.
+# Cleanup happens after PR merge (managed by Queen via qb-dispatch).
 
 echo "--- \$ROLE completed (exit=\$EXIT_CODE) ---"
 WRAPPER_BODY

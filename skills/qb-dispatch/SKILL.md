@@ -253,40 +253,47 @@ mv .claude/tasks/reports/review-leader-{N}*.yaml .claude/tasks/reports/processed
 mv .claude/tasks/reports/worker-{N}-*.yaml .claude/tasks/reports/processed/ 2>/dev/null
 ```
 
-## Cleanup after task completion
+## Cleanup
 
-After task completion (done, stuck, or error), clean up **all** resources: tmux windows, git worktrees, and adhoc branches.
+Resources have different lifecycles. Clean up each at the right time.
 
-### 1. Kill tmux windows
+### tmux windows — on task completion
+
+After task reaches done, stuck, or error, kill the tmux windows:
 
 ```bash
 tmux kill-window -t qb:issue-{N} 2>/dev/null || true
 tmux kill-window -t qb:review-{N} 2>/dev/null || true
 ```
 
-### 2. Remove git worktrees
+### Worktrees and branches — after PR merge
+
+Worktrees and branches **must be kept alive** until the PR is merged. The Leader's job ends at PR creation; the branch is still needed for review cycles and CI.
+
+Clean up only after confirming the PR is merged:
 
 ```bash
-REPO_DIR=$(git rev-parse --show-toplevel)
-WORKTREE_PATH="$REPO_DIR/.claude/worktrees/{branch}"
+# Check if PR is merged
+PR_STATE=$(gh pr view {PR_number} --json state -q '.state' 2>/dev/null)
+if [ "$PR_STATE" = "MERGED" ]; then
+  REPO_DIR=$(git rev-parse --show-toplevel)
+  WORKTREE_PATH="$REPO_DIR/.claude/worktrees/{branch}"
 
-if [ -d "$WORKTREE_PATH" ]; then
+  # 1. Remove worktree
   git -C "$REPO_DIR" worktree remove --force "$WORKTREE_PATH" 2>/dev/null || true
+
+  # 2. Delete branch
+  git branch -D {branch} 2>/dev/null || true
+
+  # 3. Prune stale references
+  git worktree prune
 fi
 ```
 
-### 3. Delete adhoc branches (after merge)
+### Session-end cleanup
 
-For branches that have been merged to main or are no longer needed:
-
-```bash
-git branch -D {branch} 2>/dev/null || true
-```
-
-### 4. Prune stale worktree references
+When the Queen session ends (`tmux kill-session -t qb`), prune any stale worktree references:
 
 ```bash
 git worktree prune
 ```
-
-**Important**: Always run cleanup in this order (windows → worktrees → branches → prune). Deleting a branch before removing its worktree will cause errors.
