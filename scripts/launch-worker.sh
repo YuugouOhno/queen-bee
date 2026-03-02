@@ -36,16 +36,16 @@ case "$ROLE" in
     ;;
   worker-tester)
     ROLE_SHORT="worker-tester"
-    ENV_VAR="QB_WORKER_CODER"
+    ENV_VAR="QB_WORKER_TESTER"
     WINDOW_NAME="issue-${ISSUE}"
     BORDER_FG="cyan"
     ROLE_ICON="🧪"
     MAX_TURNS=30
     ALLOWED_TOOLS="Read,Write,Edit,Bash,Glob,Grep"
     ;;
-  worker-reviewer)
-    ROLE_SHORT="worker-reviewer"
-    ENV_VAR="QB_WORKER_REVIEWER"
+  worker-code-reviewer)
+    ROLE_SHORT="worker-code-reviewer"
+    ENV_VAR="QB_WORKER_CODE_REVIEWER"
     WINDOW_NAME="review-${ISSUE}"
     BORDER_FG="blue"
     ROLE_ICON="🔍"
@@ -54,7 +54,7 @@ case "$ROLE" in
     ;;
   worker-security)
     ROLE_SHORT="worker-security"
-    ENV_VAR="QB_WORKER_REVIEWER"
+    ENV_VAR="QB_WORKER_SECURITY"
     WINDOW_NAME="review-${ISSUE}"
     BORDER_FG="red"
     ROLE_ICON="🛡"
@@ -63,7 +63,7 @@ case "$ROLE" in
     ;;
   worker-test-auditor)
     ROLE_SHORT="worker-test-auditor"
-    ENV_VAR="QB_WORKER_REVIEWER"
+    ENV_VAR="QB_WORKER_TEST_AUDITOR"
     WINDOW_NAME="review-${ISSUE}"
     BORDER_FG="yellow"
     ROLE_ICON="🧪"
@@ -71,7 +71,7 @@ case "$ROLE" in
     ALLOWED_TOOLS="Read,Grep,Glob,Bash"
     ;;
   *)
-    echo "Unknown role: $ROLE (expected: worker-coder | worker-tester | worker-reviewer | worker-security | worker-test-auditor)" >&2
+    echo "Unknown role: $ROLE (expected: worker-coder | worker-tester | worker-code-reviewer | worker-security | worker-test-auditor)" >&2
     exit 1
     ;;
 esac

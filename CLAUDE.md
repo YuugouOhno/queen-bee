@@ -125,7 +125,10 @@ queen-bee/
 | QB_LEADER | launch-leader.sh | prompt-context.py | Identifies Leader agent |
 | QB_REVIEW_LEADER | launch-leader.sh | prompt-context.py | Identifies Review Leader |
 | QB_WORKER_CODER | launch-worker.sh | prompt-context.py | Identifies coder Worker |
-| QB_WORKER_REVIEWER | launch-worker.sh | prompt-context.py | Identifies reviewer Worker |
+| QB_WORKER_TESTER | launch-worker.sh | prompt-context.py | Identifies tester Worker |
+| QB_WORKER_CODE_REVIEWER | launch-worker.sh | prompt-context.py | Identifies code reviewer Worker |
+| QB_WORKER_SECURITY | launch-worker.sh | prompt-context.py | Identifies security reviewer Worker |
+| QB_WORKER_TEST_AUDITOR | launch-worker.sh | prompt-context.py | Identifies test auditor Worker |
 | QB_SCRIPTS_DIR | command/qb.md | launch-*.sh | Package scripts directory |
 | QB_CONTEXTS_DIR | command/qb.md | prompt-context.py | Package contexts directory |
 | QB_LOCALE | user | prompt-context.py | Override locale preference |

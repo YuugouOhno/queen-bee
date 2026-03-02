@@ -3,27 +3,42 @@
     "QB_QUEEN": {
       "context": ["queen.md"],
       "skip_log": false,
-      "description": "queen-bee L1：Queen（全体管理）"
+      "description": "queen-bee L1: Queen（全体管理）"
     },
     "QB_LEADER": {
       "context": ["leader.md"],
       "skip_log": false,
-      "description": "queen-bee L2：Leader（実装責任者）"
+      "description": "queen-bee L2: Leader（実装責任者）"
     },
     "QB_REVIEW_LEADER": {
       "context": ["review-leader.md"],
       "skip_log": false,
-      "description": "queen-bee L2：Review Leader（レビュー責任者）"
+      "description": "queen-bee L2: Review Leader（レビュー責任者）"
     },
     "QB_WORKER_CODER": {
       "context": ["executor.md"],
       "skip_log": false,
-      "description": "queen-bee L3：Worker（実装/テスト）"
+      "description": "queen-bee L3: Worker（実装）"
     },
-    "QB_WORKER_REVIEWER": {
-      "context": ["reviewer-base.md"],
+    "QB_WORKER_TESTER": {
+      "context": ["executor.md", "tester.md"],
       "skip_log": false,
-      "description": "queen-bee L3：Worker（レビュー）"
+      "description": "queen-bee L3: Worker（テスト作成）"
+    },
+    "QB_WORKER_CODE_REVIEWER": {
+      "context": ["reviewer-base.md", "code-reviewer.md"],
+      "skip_log": false,
+      "description": "queen-bee L3: Worker（コード品質レビュー）"
+    },
+    "QB_WORKER_SECURITY": {
+      "context": ["reviewer-base.md", "security-reviewer.md"],
+      "skip_log": false,
+      "description": "queen-bee L3: Worker（セキュリティレビュー）"
+    },
+    "QB_WORKER_TEST_AUDITOR": {
+      "context": ["reviewer-base.md", "test-auditor.md"],
+      "skip_log": false,
+      "description": "queen-bee L3: Worker（テスト監査）"
     }
   },
   "roles": {
@@ -31,25 +46,43 @@
       "env_var": "QB_LEADER",
       "allowed_tools": "Read Write Edit Bash Glob Grep Skill",
       "max_turns": 80,
-      "description": "queen-bee: Issue の実装を完遂する責任者"
+      "description": "queen-bee: Issueの実装を完遂する責任者"
     },
     "review-leader": {
       "env_var": "QB_REVIEW_LEADER",
       "allowed_tools": "Read Grep Glob Bash Skill",
       "max_turns": 40,
-      "description": "queen-bee: PR レビューを完遂する責任者"
+      "description": "queen-bee: PRレビューを完遂する責任者"
     },
     "worker-coder": {
       "env_var": "QB_WORKER_CODER",
       "allowed_tools": "Read Write Edit Bash Glob Grep",
       "max_turns": 30,
-      "description": "queen-bee: 単一サブタスクの実装/テスト"
+      "description": "queen-bee: 単一サブタスクの実装"
     },
-    "worker-reviewer": {
-      "env_var": "QB_WORKER_REVIEWER",
+    "worker-tester": {
+      "env_var": "QB_WORKER_TESTER",
+      "allowed_tools": "Read Write Edit Bash Glob Grep",
+      "max_turns": 30,
+      "description": "queen-bee: サブタスクのテスト作成"
+    },
+    "worker-code-reviewer": {
+      "env_var": "QB_WORKER_CODE_REVIEWER",
       "allowed_tools": "Read Grep Glob Bash",
       "max_turns": 15,
-      "description": "queen-bee: 単一レビュー観点の実行"
+      "description": "queen-bee: コード品質レビュー"
+    },
+    "worker-security": {
+      "env_var": "QB_WORKER_SECURITY",
+      "allowed_tools": "Read Grep Glob Bash",
+      "max_turns": 15,
+      "description": "queen-bee: セキュリティレビュー"
+    },
+    "worker-test-auditor": {
+      "env_var": "QB_WORKER_TEST_AUDITOR",
+      "allowed_tools": "Read Grep Glob Bash",
+      "max_turns": 15,
+      "description": "queen-bee: テスト監査"
     }
   },
   "default_context": "default.md"
