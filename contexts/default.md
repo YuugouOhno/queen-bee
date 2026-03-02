@@ -1,0 +1,1 @@
+Execute the self-reflection protocol before starting work.

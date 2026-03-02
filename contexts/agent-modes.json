@@ -1,0 +1,56 @@
+{
+  "modes": {
+    "QB_QUEEN": {
+      "context": ["queen.md"],
+      "skip_log": false,
+      "description": "queen-bee L1：Queen（全体管理）"
+    },
+    "QB_LEADER": {
+      "context": ["leader.md"],
+      "skip_log": false,
+      "description": "queen-bee L2：Leader（実装責任者）"
+    },
+    "QB_REVIEW_LEADER": {
+      "context": ["review-leader.md"],
+      "skip_log": false,
+      "description": "queen-bee L2：Review Leader（レビュー責任者）"
+    },
+    "QB_WORKER_CODER": {
+      "context": ["executor.md"],
+      "skip_log": false,
+      "description": "queen-bee L3：Worker（実装/テスト）"
+    },
+    "QB_WORKER_REVIEWER": {
+      "context": ["reviewer-base.md"],
+      "skip_log": false,
+      "description": "queen-bee L3：Worker（レビュー）"
+    }
+  },
+  "roles": {
+    "leader": {
+      "env_var": "QB_LEADER",
+      "allowed_tools": "Read Write Edit Bash Glob Grep Skill",
+      "max_turns": 80,
+      "description": "queen-bee: Issue の実装を完遂する責任者"
+    },
+    "review-leader": {
+      "env_var": "QB_REVIEW_LEADER",
+      "allowed_tools": "Read Grep Glob Bash Skill",
+      "max_turns": 40,
+      "description": "queen-bee: PR レビューを完遂する責任者"
+    },
+    "worker-coder": {
+      "env_var": "QB_WORKER_CODER",
+      "allowed_tools": "Read Write Edit Bash Glob Grep",
+      "max_turns": 30,
+      "description": "queen-bee: 単一サブタスクの実装/テスト"
+    },
+    "worker-reviewer": {
+      "env_var": "QB_WORKER_REVIEWER",
+      "allowed_tools": "Read Grep Glob Bash",
+      "max_turns": 15,
+      "description": "queen-bee: 単一レビュー観点の実行"
+    }
+  },
+  "default_context": "default.md"
+}
