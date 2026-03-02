@@ -18,7 +18,8 @@ describe('beeops CLI', () => {
 
   it('--version shows version and exits 0', async () => {
     const { stdout } = await execFileAsync(process.execPath, [CLI, '--version']);
-    assert.match(stdout, /0\.1\.0/);
+    const pkg = require('../package.json');
+    assert.match(stdout, new RegExp(pkg.version.replace(/\./g, '\\.')));
   });
 
   it('init --help shows help', async () => {
