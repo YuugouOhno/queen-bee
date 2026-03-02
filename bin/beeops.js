@@ -286,9 +286,9 @@ function init(opts) {
   updateSettingsHook(root, opts.hookMode);
 
   // 5. Save locale preference
-  const qbDir = path.join(claudeDir, "beeops");
-  ensureDir(qbDir);
-  fs.writeFileSync(path.join(qbDir, "locale"), opts.locale + "\n");
+  const boDir = path.join(claudeDir, "beeops");
+  ensureDir(boDir);
+  fs.writeFileSync(path.join(boDir, "locale"), opts.locale + "\n");
   console.log(`  locale: ${opts.locale} (saved to .claude/beeops/locale)`);
 
   // 6. Copy contexts if --with-contexts
