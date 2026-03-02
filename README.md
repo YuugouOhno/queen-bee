@@ -135,4 +135,3 @@ MIT
 ## Author
 
 [YuugouOhno](https://github.com/YuugouOhno)
-# queen-bee
