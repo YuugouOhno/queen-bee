@@ -48,10 +48,7 @@ beeops/
 │   ├── launch-leader.sh                 # Launch Leader/Review Leader in tmux window
 │   └── launch-worker.sh                 # Launch Worker in tmux pane
 ├── hooks/
-│   ├── prompt-context.py                # UserPromptSubmit hook (env var → context injection)
-│   ├── run-log.py                       # Stop hook (session-end log recording)
-│   ├── checkpoint.py                    # PostToolUse hook (mid-session checkpoint)
-│   └── resolve-log-path.py             # Log directory path resolver utility
+│   └── prompt-context.py                # UserPromptSubmit hook (env var → context injection)
 ├── contexts/                            # Package default contexts
 │   ├── en/                              # English locale
 │   │   ├── queen.md
@@ -65,8 +62,6 @@ beeops/
 │   │   ├── security-reviewer.md        # Worker (security reviewer) context
 │   │   ├── test-auditor.md             # Worker (test auditor) context
 │   │   ├── default.md                  # Default context
-│   │   ├── log.md                       # Log recording agent context
-│   │   ├── fb.md                        # Self-improvement agent context
 │   │   └── agent-modes.json
 │   ├── ja/                              # Japanese locale
 │   │   └── ...
@@ -81,19 +76,12 @@ beeops/
 │   ├── code-reviewer.md               # Code reviewer context (root fallback)
 │   ├── security-reviewer.md           # Security reviewer context (root fallback)
 │   ├── test-auditor.md                # Test auditor context (root fallback)
-│   ├── log.md                           # Log recording agent context (root fallback)
-│   ├── fb.md                            # Self-improvement agent context (root fallback)
 │   └── default.md                       # Default context (no mode active)
 ├── skills/
 │   ├── bo-dispatch/SKILL.md             # Queen → Leader dispatch procedure
 │   ├── bo-leader-dispatch/SKILL.md      # Leader → Worker dispatch procedure
 │   ├── bo-task-decomposer/SKILL.md    # Task decomposition skill
 │   ├── bo-issue-sync/SKILL.md         # GitHub Issue → queue.yaml sync
-│   ├── bo-log-writer/SKILL.md         # Structured work log recording
-│   ├── bo-self-improver/              # Self-improvement analysis
-│   │   ├── SKILL.md
-│   │   ├── scripts/analyze.py
-│   │   └── refs/                        # Reference docs for improvement
 │   ├── bo-review-backend/SKILL.md          # Backend code review
 │   ├── bo-review-frontend/SKILL.md         # Frontend code review
 │   ├── bo-review-database/SKILL.md         # Database/SQL review
@@ -115,8 +103,6 @@ beeops/
 │   │   ├── bo-leader-dispatch/SKILL.md  # Leader skill
 │   │   ├── bo-task-decomposer/SKILL.md
 │   │   ├── bo-issue-sync/SKILL.md
-│   │   ├── bo-log-writer/SKILL.md
-│   │   ├── bo-self-improver/          # With scripts/ and refs/
 │   │   ├── bo-review-backend/SKILL.md
 │   │   ├── bo-review-frontend/SKILL.md
 │   │   ├── bo-review-database/SKILL.md
@@ -138,8 +124,8 @@ beeops/
 1. Prerequisites check (Node.js>=18, git, tmux, python3, claude, gh)
 2. Detect project root via `git rev-parse --show-toplevel`
 3. Copy `.claude/commands/bo.md`
-4. Copy 12 skills to `.claude/skills/`
-5. Register 3 hooks: UserPromptSubmit, Stop, PostToolUse (default: `.claude/settings.local.json`)
+4. Copy 10 skills to `.claude/skills/`
+5. Register 1 hook: UserPromptSubmit (default: `.claude/settings.local.json`)
 6. Save locale preference to `.claude/beeops/locale`
 7. If `--with-contexts`: copy defaults to `.claude/beeops/contexts/`
 8. Display completion message
@@ -169,9 +155,6 @@ beeops/
 | BO_SCRIPTS_DIR | command/bo.md | launch-*.sh | Package scripts directory |
 | BO_CONTEXTS_DIR | command/bo.md | prompt-context.py | Package contexts directory |
 | BO_LOCALE | user | prompt-context.py | Override locale preference |
-| BO_LOG_DIR | user | resolve-log-path.py | Override log directory path |
-| BO_FB_AGENT | run-log.py | prompt-context.py, checkpoint.py | Identifies log/feedback agent (loop prevention) |
-| BO_FB_INCLUDE_FB | run-log.py | prompt-context.py | Includes self-improvement in feedback agent |
 
 ## Development
 
@@ -193,13 +176,11 @@ npx beeops check
 ### Verification Points
 
 1. `.claude/commands/bo.md` is generated
-2. `.claude/skills/` contains all 12 skills
-3. 3 hooks registered in the specified settings file (UserPromptSubmit, Stop, PostToolUse)
+2. `.claude/skills/` contains all 10 skills
+3. 1 hook registered in the specified settings file (UserPromptSubmit)
 4. `/bo` launches Queen in tmux
 5. Queen can execute `$BO_SCRIPTS_DIR/launch-leader.sh`
 6. `BO_SCRIPTS_DIR`/`BO_CONTEXTS_DIR` propagate to Leader/Worker
 7. `prompt-context.py` resolves contexts with locale fallback
 8. Deleting a local file falls back to package default
-9. Stop hook triggers log recording on session exit
-10. PostToolUse hook triggers checkpoint after threshold edits
-11. Review skills are invoked by code-reviewer via resource routing
+9. Review skills are invoked by code-reviewer via resource routing

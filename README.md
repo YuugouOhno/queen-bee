@@ -49,7 +49,7 @@ Attach with `tmux attach -t bo` to watch all agents work in real-time.
 - **Review Leader** (L2) — Launches review Workers, aggregates findings, approves or requests fixes
 - **Workers** (L3) — Execute a single subtask: coding, testing, or reviewing
 
-The system includes **12 specialized skills**, **3 hooks** (UserPromptSubmit for context injection, Stop for session logging, PostToolUse for mid-session checkpoints), and **locale support** (en/ja) with a 4-step fallback chain.
+The system includes **10 specialized skills**, **1 hook** (UserPromptSubmit for context injection), and **locale support** (en/ja) with a 4-step fallback chain.
 
 Workers receive multi-layer context injection (base + specialization), so each role gets tailored instructions while sharing common autonomous-operation rules.
 

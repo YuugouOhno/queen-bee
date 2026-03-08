@@ -1,54 +1,43 @@
 {
   "modes": {
-    "BO_FB_AGENT": {
-      "context": ["log.md"],
-      "skip_log": true,
-      "description": "beeops: ログ記録エージェント（セッション終了時）"
-    },
-    "BO_FB_INCLUDE_FB": {
-      "context": ["fb.md"],
-      "skip_log": true,
-      "description": "beeops: ログ記録 + 自己改善（10%確率で追加）",
-      "append": true
-    },
     "BO_QUEEN": {
       "context": ["queen.md"],
-      "skip_log": false,
+
       "description": "beeops L1: Queen（全体管理）"
     },
     "BO_LEADER": {
       "context": ["leader.md"],
-      "skip_log": false,
+
       "description": "beeops L2: Leader（実装責任者）"
     },
     "BO_REVIEW_LEADER": {
       "context": ["review-leader.md"],
-      "skip_log": false,
+
       "description": "beeops L2: Review Leader（レビュー責任者）"
     },
     "BO_WORKER_CODER": {
       "context": ["worker-base.md", "coder.md"],
-      "skip_log": false,
+
       "description": "beeops L3: Worker（実装）"
     },
     "BO_WORKER_TESTER": {
       "context": ["worker-base.md", "tester.md"],
-      "skip_log": false,
+
       "description": "beeops L3: Worker（テスト作成）"
     },
     "BO_WORKER_CODE_REVIEWER": {
       "context": ["reviewer-base.md", "code-reviewer.md"],
-      "skip_log": false,
+
       "description": "beeops L3: Worker（コード品質レビュー）"
     },
     "BO_WORKER_SECURITY": {
       "context": ["reviewer-base.md", "security-reviewer.md"],
-      "skip_log": false,
+
       "description": "beeops L3: Worker（セキュリティレビュー）"
     },
     "BO_WORKER_TEST_AUDITOR": {
       "context": ["reviewer-base.md", "test-auditor.md"],
-      "skip_log": false,
+
       "description": "beeops L3: Worker（テスト監査）"
     }
   },

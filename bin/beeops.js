@@ -11,8 +11,6 @@ const SKILLS_SRC = path.join(PKG_DIR, "skills");
 const CONTEXTS_SRC = path.join(PKG_DIR, "contexts");
 const HOOKS_DIR = path.join(PKG_DIR, "hooks");
 const HOOK_SRC = path.join(HOOKS_DIR, "prompt-context.py");
-const HOOK_STOP_SRC = path.join(HOOKS_DIR, "run-log.py");
-const HOOK_POST_SRC = path.join(HOOKS_DIR, "checkpoint.py");
 const HOME_DIR = process.env.HOME || process.env.USERPROFILE;
 
 // ── Helpers ──
@@ -188,14 +186,6 @@ function updateSettingsHook(root, mode) {
   const r1 = upsertHook(settings.hooks, "UserPromptSubmit", "prompt-context.py", `python3 ${HOOK_SRC}`);
   console.log(`  ${r1}: ${label} (UserPromptSubmit hook)`);
 
-  // Stop: run-log.py
-  const r2 = upsertHook(settings.hooks, "Stop", "run-log.py", `python3 ${HOOK_STOP_SRC}`);
-  console.log(`  ${r2}: ${label} (Stop hook)`);
-
-  // PostToolUse: checkpoint.py
-  const r3 = upsertHook(settings.hooks, "PostToolUse", "checkpoint.py", `python3 ${HOOK_POST_SRC}`);
-  console.log(`  ${r3}: ${label} (PostToolUse hook)`);
-
   fs.writeFileSync(settingsFile, JSON.stringify(settings, null, 2) + "\n");
 }
 
@@ -230,14 +220,6 @@ function init(opts) {
     path.join(claudeDir, "skills", "bo-issue-sync")
   );
   copyDir(
-    path.join(SKILLS_SRC, "bo-log-writer"),
-    path.join(claudeDir, "skills", "bo-log-writer")
-  );
-  copyDir(
-    path.join(SKILLS_SRC, "bo-self-improver"),
-    path.join(claudeDir, "skills", "bo-self-improver")
-  );
-  copyDir(
     path.join(SKILLS_SRC, "bo-review-backend"),
     path.join(claudeDir, "skills", "bo-review-backend")
   );
@@ -266,6 +248,7 @@ function init(opts) {
   for (const old of [
     "leader-dispatch", "ants-leader-dispatch", "ants-dispatch",
     "meta-task-decomposer", "orch-issue-sync", "meta-log-writer", "meta-self-improver",
+    "bo-log-writer", "bo-self-improver",
     "review-backend", "review-frontend", "review-database",
     "review-operations", "review-process", "review-security",
   ]) {
@@ -282,7 +265,7 @@ function init(opts) {
     console.log("  removed: .claude/commands/ants.md (migrated to bo.md)");
   }
 
-  // 4. Register hooks (UserPromptSubmit + Stop + PostToolUse)
+  // 4. Register hooks (UserPromptSubmit)
   updateSettingsHook(root, opts.hookMode);
 
   // 5. Save locale preference
@@ -344,7 +327,6 @@ function check() {
   // Check skills
   const CORE_SKILLS = [
     "bo-dispatch", "bo-leader-dispatch", "bo-task-decomposer", "bo-issue-sync",
-    "bo-log-writer", "bo-self-improver",
     "bo-review-backend", "bo-review-frontend", "bo-review-database",
     "bo-review-operations", "bo-review-process", "bo-review-security",
   ];
@@ -367,8 +349,6 @@ function check() {
 
   const HOOK_CHECKS = [
     { hookType: "UserPromptSubmit", matchStr: "prompt-context.py", label: "UserPromptSubmit" },
-    { hookType: "Stop", matchStr: "run-log.py", label: "Stop" },
-    { hookType: "PostToolUse", matchStr: "checkpoint.py", label: "PostToolUse" },
   ];
 
   for (const { hookType, matchStr, label: hookLabel } of HOOK_CHECKS) {
@@ -382,12 +362,8 @@ function check() {
       }
     }
     if (!hookFound) {
-      if (hookType === "UserPromptSubmit") {
-        console.log(`  [missing] ${hookLabel} hook not found`);
-        ok = false;
-      } else {
-        console.log(`  [warn] ${hookLabel} hook not found (optional)`);
-      }
+      console.log(`  [missing] ${hookLabel} hook not found`);
+      ok = false;
     }
   }
 

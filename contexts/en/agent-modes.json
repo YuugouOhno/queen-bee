@@ -1,54 +1,43 @@
 {
   "modes": {
-    "BO_FB_AGENT": {
-      "context": ["log.md"],
-      "skip_log": true,
-      "description": "beeops: log recording agent (session exit)"
-    },
-    "BO_FB_INCLUDE_FB": {
-      "context": ["fb.md"],
-      "skip_log": true,
-      "description": "beeops: log recording + self-improvement (10% chance)",
-      "append": true
-    },
     "BO_QUEEN": {
       "context": ["queen.md"],
-      "skip_log": false,
+
       "description": "beeops L1: Queen (orchestrator)"
     },
     "BO_LEADER": {
       "context": ["leader.md"],
-      "skip_log": false,
+
       "description": "beeops L2: Leader (implementation lead)"
     },
     "BO_REVIEW_LEADER": {
       "context": ["review-leader.md"],
-      "skip_log": false,
+
       "description": "beeops L2: Review Leader (review lead)"
     },
     "BO_WORKER_CODER": {
       "context": ["worker-base.md", "coder.md"],
-      "skip_log": false,
+
       "description": "beeops L3: Worker (implementation)"
     },
     "BO_WORKER_TESTER": {
       "context": ["worker-base.md", "tester.md"],
-      "skip_log": false,
+
       "description": "beeops L3: Worker (test writing)"
     },
     "BO_WORKER_CODE_REVIEWER": {
       "context": ["reviewer-base.md", "code-reviewer.md"],
-      "skip_log": false,
+
       "description": "beeops L3: Worker (code review)"
     },
     "BO_WORKER_SECURITY": {
       "context": ["reviewer-base.md", "security-reviewer.md"],
-      "skip_log": false,
+
       "description": "beeops L3: Worker (security review)"
     },
     "BO_WORKER_TEST_AUDITOR": {
       "context": ["reviewer-base.md", "test-auditor.md"],
-      "skip_log": false,
+
       "description": "beeops L3: Worker (test audit)"
     }
   },
