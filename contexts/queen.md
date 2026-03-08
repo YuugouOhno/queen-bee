@@ -70,7 +70,12 @@ Analyze the received instructions (prompt) and formulate an execution plan.
 
 | Instruction Content | Action |
 |---------------------|--------|
-| No instructions / "Process Issues" etc. | Go directly to Phase 1 (Issue sync) |
+| No instructions / "Process Issues" etc. | Go directly to Phase 1 (Issue sync) — process all open issues |
+| "process only issues: #42, #55" etc. | Phase 1 with issue filter — only sync and process the specified issue numbers |
+| "process only issues assigned to me" | Phase 1 with assignee filter — use `gh issue list --assignee @me` to fetch only assigned issues |
+| "Only process issues with priority X or higher" | Phase 1 with priority filter — skip issues below the specified priority |
+| "Only process issues with labels: X, Y" | Phase 1 with label filter — use `gh issue list --label X --label Y` |
+| "Skip the review phase" | Set skip_review flag — after Leader completes, go directly to ci_checking instead of launching Review Leader |
 | Specific work instructions present | Decompose into tasks and add to queue.yaml |
 
 ### Task Decomposition Procedure

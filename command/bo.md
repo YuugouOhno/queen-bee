@@ -86,17 +86,78 @@ done
 
 Polls for up to 120 seconds. Startup is complete when the `Claude Code` banner appears.
 
-### Step 5: Send initial prompt
+### Step 5: Resolve execution mode and send initial prompt
 
-If `$ARGUMENTS` is non-empty, pass the user's instruction directly. Otherwise, send a default instruction to sync issues.
+Determine what instruction to send to the Queen. Priority order:
+
+1. **`$ARGUMENTS` provided** → use it directly, skip settings/interactive
+2. **Settings file exists** (`.claude/beeops/settings.json`) → build instruction from settings
+3. **No arguments and no settings** → ask the user interactively
+
+#### 5a. If `$ARGUMENTS` is non-empty
+
+Use it directly:
 
 ```bash
 if [ -n "$ARGUMENTS" ]; then
   INSTRUCTION="$ARGUMENTS"
-else
-  INSTRUCTION="Sync GitHub Issues to queue.yaml and complete all tasks."
 fi
+```
 
+#### 5b. If no arguments, check for settings file
+
+```bash
+SETTINGS_FILE=".claude/beeops/settings.json"
+if [ -z "$ARGUMENTS" ] && [ -f "$SETTINGS_FILE" ]; then
+  echo "Found settings: $SETTINGS_FILE"
+  cat "$SETTINGS_FILE"
+fi
+```
+
+If the settings file exists, build the instruction based on its contents:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `issues` | `number[]` | Specific issue numbers to process (e.g. `[42, 55]`) |
+| `assignee` | `string` | `"me"` = only issues assigned to the current GitHub user, `"all"` = all open issues |
+| `skip_review` | `boolean` | Skip review phase if true (default: false) |
+| `priority` | `string` | Only process issues of this priority or higher (`"high"`, `"medium"`, `"low"`) |
+| `labels` | `string[]` | Only process issues with these labels |
+
+Build the `INSTRUCTION` string as follows:
+- If `issues` is set: `"Sync GitHub Issues to queue.yaml and process only issues: #42, #55."`
+- If `assignee` is `"me"`: `"Sync GitHub Issues to queue.yaml and process only issues assigned to me."`
+- If `assignee` is `"all"` or not set: `"Sync GitHub Issues to queue.yaml and complete all tasks."`
+- Append options: if `skip_review` is true, append `" Skip the review phase."`. If `priority` is set, append `" Only process issues with priority {priority} or higher."`. If `labels` is set, append `" Only process issues with labels: {labels}."`
+
+#### 5c. If no arguments and no settings file, ask the user interactively
+
+Present the following choices to the user (use AskUserQuestion or display the options and wait for input):
+
+```
+How should the Queen process issues?
+
+1. Specify issue numbers (e.g. 42, 55, 100)
+2. Only issues assigned to me
+3. All open issues
+
+Enter your choice (1/2/3):
+```
+
+Based on the user's response:
+- **Choice 1**: Ask for issue numbers, then set `INSTRUCTION="Sync GitHub Issues to queue.yaml and process only issues: #42, #55."`
+- **Choice 2**: Set `INSTRUCTION="Sync GitHub Issues to queue.yaml and process only issues assigned to me."`
+- **Choice 3**: Set `INSTRUCTION="Sync GitHub Issues to queue.yaml and complete all tasks."`
+
+Optionally, after the mode is selected, ask:
+```
+Save this as default settings? (y/n)
+```
+If yes, write the corresponding `.claude/beeops/settings.json` file so the next run uses it automatically.
+
+#### 5d. Send the instruction to the Queen
+
+```bash
 tmux send-keys -t "$SESSION:queen" "$INSTRUCTION"
 sleep 0.3
 tmux send-keys -t "$SESSION:queen" Enter

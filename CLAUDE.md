@@ -113,6 +113,7 @@ beeops/
 │   ├── settings.json                    # Hook registration (--shared)
 │   └── beeops/
 │       ├── locale                       # Locale preference file
+│       ├── settings.json                # Execution settings (issue filter, options)
 │       └── contexts/                    # Custom contexts (--with-contexts only)
 │           ├── en/
 │           ├── ja/
@@ -139,6 +140,36 @@ beeops/
 | `-g`, `--global` | `~/.claude/settings.json` | Global (all projects) |
 | `--with-contexts` | — | Deploy contexts for customization |
 | `--locale <lang>` | — | Set locale (default: en, available: en, ja) |
+
+## Settings File (`.claude/beeops/settings.json`)
+
+Optional configuration file to control `/bo` execution behavior. When present, the `/bo` command reads this file and builds the Queen's instruction automatically. When absent, the user is prompted interactively.
+
+### Schema
+
+```json
+{
+  "issues": [42, 55],
+  "assignee": "me",
+  "skip_review": false,
+  "priority": "medium",
+  "labels": ["bug", "feature"]
+}
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `issues` | `number[]` | — | Specific issue numbers to process |
+| `assignee` | `string` | `"all"` | `"me"` = only assigned issues, `"all"` = all open issues |
+| `skip_review` | `boolean` | `false` | Skip review phase |
+| `priority` | `string` | — | Minimum priority filter (`"high"`, `"medium"`, `"low"`) |
+| `labels` | `string[]` | — | Only process issues with these labels |
+
+### Resolution Priority
+
+1. `/bo <arguments>` — arguments override everything
+2. `.claude/beeops/settings.json` — used when no arguments given
+3. Interactive prompt — shown when neither arguments nor settings exist
 
 ## Environment Variables
 

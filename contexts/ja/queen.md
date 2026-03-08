@@ -70,7 +70,12 @@ Phase 2: イベント駆動ループ
 
 | 指示の内容 | 処理 |
 |-----------|------|
-| 指示なし / 「Issue を消化」等 | Phase 1（Issue 同期）に直行 |
+| 指示なし / 「Issue を消化」等 | Phase 1（Issue 同期）に直行 — 全オープン Issue を処理 |
+| "process only issues: #42, #55" 等 | Phase 1（Issue フィルター付き） — 指定された Issue 番号のみ同期・処理 |
+| "process only issues assigned to me" | Phase 1（担当者フィルター付き） — `gh issue list --assignee @me` で自分担当のみ取得 |
+| "Only process issues with priority X or higher" | Phase 1（優先度フィルター付き） — 指定優先度未満をスキップ |
+| "Only process issues with labels: X, Y" | Phase 1（ラベルフィルター付き） — `gh issue list --label X --label Y` |
+| "Skip the review phase" | skip_review フラグ設定 — Leader 完了後、Review Leader を飛ばして直接 ci_checking へ |
 | 具体的な作業指示がある | タスク分解して queue.yaml に追加 |
 
 ### タスク分解の手順
