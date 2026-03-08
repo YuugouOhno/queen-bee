@@ -128,7 +128,6 @@ env \${ENV_VAR}=1 \
   claude --dangerously-skip-permissions \
   --allowedTools "\$ALLOWED_TOOLS" \
   --max-turns \$MAX_TURNS \
-  --no-session-persistence \
   "\$(cat "\$PROMPT_FILE")"
 EXIT_CODE=\$?
 
