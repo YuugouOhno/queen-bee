@@ -258,25 +258,13 @@ function init(opts) {
     path.join(claudeDir, "skills", "bo-review-security")
   );
 
-  // 3. Clean up old names if exists
-  for (const old of [
-    "leader-dispatch", "ants-leader-dispatch", "ants-dispatch",
-    "meta-task-decomposer", "orch-issue-sync", "meta-log-writer", "meta-self-improver",
-    "bo-log-writer", "bo-self-improver",
-    "review-backend", "review-frontend", "review-database",
-    "review-operations", "review-process", "review-security",
-  ]) {
+  // 3. Clean up removed beeops skills if exists
+  for (const old of ["bo-log-writer", "bo-self-improver"]) {
     const oldDir = path.join(claudeDir, "skills", old);
     if (fs.existsSync(oldDir)) {
       fs.rmSync(oldDir, { recursive: true });
-      console.log(`  removed: .claude/skills/${old}/ (migrated to bo-*)`);
+      console.log(`  removed: .claude/skills/${old}/ (no longer included)`);
     }
-  }
-  // Old command file
-  const oldCmd = path.join(claudeDir, "commands", "ants.md");
-  if (fs.existsSync(oldCmd)) {
-    fs.unlinkSync(oldCmd);
-    console.log("  removed: .claude/commands/ants.md (migrated to bo.md)");
   }
 
   // 4. Register hooks (UserPromptSubmit)
