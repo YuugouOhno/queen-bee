@@ -23,7 +23,7 @@ Eliminates hardcoded paths by dynamically resolving the package install location
 
 ## Context Resolution: 4-Step Locale Fallback
 
-prompt-context.py resolves context files in the following order:
+bo-prompt-context.py resolves context files in the following order:
 
 ```
 1. Project local (locale): <project>/.claude/beeops/contexts/<locale>/<file>
@@ -48,7 +48,7 @@ beeops/
 │   ├── launch-leader.sh                 # Launch Leader/Review Leader in tmux window
 │   └── launch-worker.sh                 # Launch Worker in tmux pane
 ├── hooks/
-│   └── prompt-context.py                # UserPromptSubmit hook (env var → context injection)
+│   └── bo-prompt-context.py                # UserPromptSubmit hook (env var → context injection)
 ├── contexts/                            # Package default contexts
 │   ├── en/                              # English locale
 │   │   ├── queen.md
@@ -144,17 +144,17 @@ beeops/
 
 | Variable | Set by | Used by | Purpose |
 |----------|--------|---------|---------|
-| BO_QUEEN | command/bo.md | prompt-context.py | Identifies Queen agent |
-| BO_LEADER | launch-leader.sh | prompt-context.py | Identifies Leader agent |
-| BO_REVIEW_LEADER | launch-leader.sh | prompt-context.py | Identifies Review Leader |
-| BO_WORKER_CODER | launch-worker.sh | prompt-context.py | Identifies coder Worker |
-| BO_WORKER_TESTER | launch-worker.sh | prompt-context.py | Identifies tester Worker |
-| BO_WORKER_CODE_REVIEWER | launch-worker.sh | prompt-context.py | Identifies code reviewer Worker |
-| BO_WORKER_SECURITY | launch-worker.sh | prompt-context.py | Identifies security reviewer Worker |
-| BO_WORKER_TEST_AUDITOR | launch-worker.sh | prompt-context.py | Identifies test auditor Worker |
+| BO_QUEEN | command/bo.md | bo-prompt-context.py | Identifies Queen agent |
+| BO_LEADER | launch-leader.sh | bo-prompt-context.py | Identifies Leader agent |
+| BO_REVIEW_LEADER | launch-leader.sh | bo-prompt-context.py | Identifies Review Leader |
+| BO_WORKER_CODER | launch-worker.sh | bo-prompt-context.py | Identifies coder Worker |
+| BO_WORKER_TESTER | launch-worker.sh | bo-prompt-context.py | Identifies tester Worker |
+| BO_WORKER_CODE_REVIEWER | launch-worker.sh | bo-prompt-context.py | Identifies code reviewer Worker |
+| BO_WORKER_SECURITY | launch-worker.sh | bo-prompt-context.py | Identifies security reviewer Worker |
+| BO_WORKER_TEST_AUDITOR | launch-worker.sh | bo-prompt-context.py | Identifies test auditor Worker |
 | BO_SCRIPTS_DIR | command/bo.md | launch-*.sh | Package scripts directory |
-| BO_CONTEXTS_DIR | command/bo.md | prompt-context.py | Package contexts directory |
-| BO_LOCALE | user | prompt-context.py | Override locale preference |
+| BO_CONTEXTS_DIR | command/bo.md | bo-prompt-context.py | Package contexts directory |
+| BO_LOCALE | user | bo-prompt-context.py | Override locale preference |
 
 ## Development
 
@@ -181,6 +181,6 @@ npx beeops check
 4. `/bo` launches Queen in tmux
 5. Queen can execute `$BO_SCRIPTS_DIR/launch-leader.sh`
 6. `BO_SCRIPTS_DIR`/`BO_CONTEXTS_DIR` propagate to Leader/Worker
-7. `prompt-context.py` resolves contexts with locale fallback
+7. `bo-prompt-context.py` resolves contexts with locale fallback
 8. Deleting a local file falls back to package default
 9. Review skills are invoked by code-reviewer via resource routing

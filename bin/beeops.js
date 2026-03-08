@@ -10,7 +10,7 @@ const COMMAND_SRC = path.join(PKG_DIR, "command", "bo.md");
 const SKILLS_SRC = path.join(PKG_DIR, "skills");
 const CONTEXTS_SRC = path.join(PKG_DIR, "contexts");
 const HOOKS_DIR = path.join(PKG_DIR, "hooks");
-const HOOK_SRC = path.join(HOOKS_DIR, "prompt-context.py");
+const HOOK_SRC = path.join(HOOKS_DIR, "bo-prompt-context.py");
 const HOME_DIR = process.env.HOME || process.env.USERPROFILE;
 
 // ── Helpers ──
@@ -182,8 +182,22 @@ function updateSettingsHook(root, mode) {
 
   const label = settingsModeLabel(mode);
 
-  // UserPromptSubmit: prompt-context.py
-  const r1 = upsertHook(settings.hooks, "UserPromptSubmit", "prompt-context.py", `python3 ${HOOK_SRC}`);
+  // Migrate old hook name (prompt-context.py → bo-prompt-context.py)
+  if (settings.hooks.UserPromptSubmit) {
+    const oldIdx = settings.hooks.UserPromptSubmit.findIndex((entry) => {
+      if (entry.hooks) {
+        return entry.hooks.some((h) => h.command && h.command.includes("prompt-context.py") && h.command.includes("beeops"));
+      }
+      return entry.command && entry.command.includes("prompt-context.py") && entry.command.includes("beeops");
+    });
+    if (oldIdx >= 0) {
+      settings.hooks.UserPromptSubmit.splice(oldIdx, 1);
+      console.log(`  migrated: removed old prompt-context.py hook`);
+    }
+  }
+
+  // UserPromptSubmit: bo-prompt-context.py
+  const r1 = upsertHook(settings.hooks, "UserPromptSubmit", "bo-prompt-context.py", `python3 ${HOOK_SRC}`);
   console.log(`  ${r1}: ${label} (UserPromptSubmit hook)`);
 
   fs.writeFileSync(settingsFile, JSON.stringify(settings, null, 2) + "\n");
@@ -348,7 +362,7 @@ function check() {
   ];
 
   const HOOK_CHECKS = [
-    { hookType: "UserPromptSubmit", matchStr: "prompt-context.py", label: "UserPromptSubmit" },
+    { hookType: "UserPromptSubmit", matchStr: "bo-prompt-context.py", label: "UserPromptSubmit" },
   ];
 
   for (const { hookType, matchStr, label: hookLabel } of HOOK_CHECKS) {
