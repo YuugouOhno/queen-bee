@@ -56,31 +56,31 @@
     },
     "worker-coder": {
       "env_var": "BO_WORKER_CODER",
-      "allowed_tools": "Read Write Edit Bash Glob Grep",
+      "allowed_tools": "Read Write Edit Bash Glob Grep Skill",
       "max_turns": 30,
       "description": "beeops: single subtask implementation"
     },
     "worker-tester": {
       "env_var": "BO_WORKER_TESTER",
-      "allowed_tools": "Read Write Edit Bash Glob Grep",
+      "allowed_tools": "Read Write Edit Bash Glob Grep Skill",
       "max_turns": 30,
       "description": "beeops: test writing for a subtask"
     },
     "worker-code-reviewer": {
       "env_var": "BO_WORKER_CODE_REVIEWER",
-      "allowed_tools": "Read Grep Glob Bash",
+      "allowed_tools": "Read Grep Glob Bash Skill",
       "max_turns": 15,
       "description": "beeops: code quality review"
     },
     "worker-security": {
       "env_var": "BO_WORKER_SECURITY",
-      "allowed_tools": "Read Grep Glob Bash",
+      "allowed_tools": "Read Grep Glob Bash Skill",
       "max_turns": 15,
       "description": "beeops: security review"
     },
     "worker-test-auditor": {
       "env_var": "BO_WORKER_TEST_AUDITOR",
-      "allowed_tools": "Read Grep Glob Bash",
+      "allowed_tools": "Read Grep Glob Bash Skill",
       "max_turns": 15,
       "description": "beeops: test audit"
     }

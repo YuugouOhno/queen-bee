@@ -153,7 +153,9 @@ Optional configuration file to control `/bo` execution behavior. When present, t
   "assignee": "me",
   "skip_review": false,
   "priority": "medium",
-  "labels": ["bug", "feature"]
+  "labels": ["bug", "feature"],
+  "github_username": "octocat",
+  "max_parallel_leaders": 2
 }
 ```
 
@@ -164,6 +166,8 @@ Optional configuration file to control `/bo` execution behavior. When present, t
 | `skip_review` | `boolean` | `false` | Skip review phase |
 | `priority` | `string` | — | Minimum priority filter (`"high"`, `"medium"`, `"low"`) |
 | `labels` | `string[]` | — | Only process issues with these labels |
+| `github_username` | `string` | — | GitHub username for @mention in Issue clarification comments |
+| `max_parallel_leaders` | `number` | `2` | Maximum number of Leaders running in parallel for independent Issues |
 
 ### Resolution Priority
 

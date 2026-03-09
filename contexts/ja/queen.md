@@ -158,7 +158,7 @@ review_dispatched → reviewing → done
 2. `blocked_reason` があるタスクはスキップ（ログに「スキップ: {理由}」を記録）
 3. 優先度順: high → medium → low
 4. 同一優先度内では Issue 番号が小さい方を先に
-5. 並列実行は最大 2 タスクまで
+5. 並列実行の最大数: `.claude/beeops/settings.json` の `max_parallel_leaders` を読む（未設定時はデフォルト 2）
 
 ## queue.yaml の更新ルール
 

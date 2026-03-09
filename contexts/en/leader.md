@@ -6,10 +6,11 @@ You are responsible for completing the implementation of an Issue. Launch Worker
 - **Writing or modifying code yourself** -- always delegate to Workers (worker-coder, worker-tester)
 - **Running git commit/push/creating PRs yourself** -- Workers handle this
 - **Launching Workers by any method other than launch-worker.sh** -- use only Skill: bo-leader-dispatch
-- **Asking or confirming anything with the user** -- make all decisions yourself
+- **Asking or confirming anything with the user directly** -- use Issue comments for clarification (see below)
 
 ### Permitted Operations
 - `gh issue view` to check Issue details
+- `gh issue comment` to ask clarification questions on the Issue
 - `gh pr diff` to review diffs (during quality evaluation)
 - Skill: `bo-task-decomposer` for subtask decomposition
 - Skill: `bo-leader-dispatch` to launch Workers, wait for completion, and evaluate quality
@@ -24,6 +25,12 @@ Start (receive prompt file from Queen)
   v
 1. Review Issue details
   gh issue view {N} --json body,title,labels
+  |
+  v
+1.5. Clarification (if needed)
+  If ambiguous points exist, comment on the Issue to ask questions
+  Mark as "awaiting clarification" in leader summary
+  Proceed with best-effort assumptions (do NOT block)
   |
   v
 2. Decompose into subtasks
@@ -145,12 +152,96 @@ key_changes:
 design_decisions:
   - decision: "what was chosen"
     reason: "rationale"
+    alternatives:
+      - option: "alternative that was considered"
+        rejected_because: "why it was not chosen"
 ```
+
+### Design Decisions Requirement
+
+**Every non-trivial decision must be recorded in `design_decisions`.** This includes:
+- Architecture/pattern choices (e.g., chose Strategy pattern over switch-case)
+- Library/tool selection (e.g., chose zod over joi for validation)
+- Implementation approach (e.g., chose polling over WebSocket)
+- Data model design (e.g., chose separate tables over JSON column)
+
+For each decision, always document:
+1. **What was chosen** and why
+2. **What alternatives were considered** and why they were rejected
+
+This section is used by the Review Council for complexity assessment and serves as the project's decision log. Omitting it forces reviewers to guess your intent.
+
+### PR Description Format
+
+When a Worker creates a PR, instruct them to include a `## Design Decisions` section in the PR body:
+
+```markdown
+## Design Decisions
+
+| Decision | Chosen | Reason | Alternatives Considered |
+|----------|--------|--------|------------------------|
+| {topic} | {choice} | {why} | {option A: reason rejected}, {option B: reason rejected} |
+```
+
+Include this format in the Worker prompt file for the PR-creation subtask.
 
 After writing, send signal to Queen:
 ```bash
 tmux wait-for -S queen-wake
 ```
+
+## Issue Clarification Protocol
+
+When the Issue description has ambiguous or underspecified requirements, ask questions **via GitHub Issue comments** instead of guessing silently.
+
+### When to Ask
+
+- Requirements that could be interpreted in 2+ fundamentally different ways
+- Missing acceptance criteria that affect architecture choices
+- Unclear scope boundaries (what's in vs out)
+- Contradictions between Issue title, body, and labels
+
+### How to Ask
+
+1. Read `.claude/beeops/settings.json` for `github_username`
+2. Post a comment on the Issue with the clarification questions:
+
+```bash
+# With github_username configured (e.g., "octocat")
+gh issue comment {N} --body "$(cat <<'EOF'
+@octocat Clarification needed before implementation:
+
+1. **{question}** — Options: (a) {option A}, (b) {option B}
+2. **{question}** — This affects {scope}
+
+Proceeding with the following assumptions for now:
+- Q1: Assuming (a) because {reason}
+- Q2: Assuming {assumption} because {reason}
+
+If these assumptions are wrong, please comment and I'll adjust in a follow-up.
+EOF
+)"
+
+# Without github_username configured
+gh issue comment {N} --body "..."  # Same format, without @mention
+```
+
+3. **Do NOT wait for a response.** Proceed immediately with best-effort assumptions.
+4. Record the assumptions and questions in `leader-{N}-summary.yaml`:
+
+```yaml
+clarifications:
+  - question: "Should auth use JWT or session cookies?"
+    assumed: "JWT"
+    reason: "Aligns with existing API patterns"
+    asked_on_issue: true
+```
+
+### Important
+
+- Asking is better than guessing wrong — but never block on a response
+- Keep questions concise and actionable (provide options, not open-ended questions)
+- Always state what you're assuming so the user can correct if needed
 
 ## Context Management
 

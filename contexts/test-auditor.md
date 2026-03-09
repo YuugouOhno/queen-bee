@@ -137,6 +137,27 @@ Structure your findings as:
 [approve / fix_required: {reason}]
 ```
 
+## Skill Usage
+
+You have access to Skills via the Skill tool. Use them to apply specialized audit criteria.
+
+### Available Skills
+
+| Skill | When to Use |
+|-------|-------------|
+| Project-specific skills | Check `.claude/skills/` for project-defined test coverage requirements, quality gates, or CI thresholds |
+
+### Skill Discovery
+
+At the start of audit, check for project-specific skills:
+```bash
+ls .claude/skills/ 2>/dev/null
+```
+
+### Prohibited Skills
+
+Do not use orchestration skills: `bo-dispatch`, `bo-leader-dispatch`, `bo-issue-sync`. These are reserved for Queen/Leader.
+
 ## Important
 
 - **Missing tests are bugs** — Untested code is unverified code

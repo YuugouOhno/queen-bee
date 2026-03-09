@@ -32,7 +32,7 @@ case "$ROLE" in
     BORDER_FG="green"
     ROLE_ICON="⚡"
     MAX_TURNS=30
-    ALLOWED_TOOLS="Read,Write,Edit,Bash,Glob,Grep"
+    ALLOWED_TOOLS="Read,Write,Edit,Bash,Glob,Grep,Skill"
     ;;
   worker-tester)
     ROLE_SHORT="worker-tester"
@@ -41,7 +41,7 @@ case "$ROLE" in
     BORDER_FG="cyan"
     ROLE_ICON="🧪"
     MAX_TURNS=30
-    ALLOWED_TOOLS="Read,Write,Edit,Bash,Glob,Grep"
+    ALLOWED_TOOLS="Read,Write,Edit,Bash,Glob,Grep,Skill"
     ;;
   worker-code-reviewer)
     ROLE_SHORT="worker-code-reviewer"
@@ -50,7 +50,7 @@ case "$ROLE" in
     BORDER_FG="blue"
     ROLE_ICON="🔍"
     MAX_TURNS=15
-    ALLOWED_TOOLS="Read,Grep,Glob,Bash"
+    ALLOWED_TOOLS="Read,Grep,Glob,Bash,Skill"
     ;;
   worker-security)
     ROLE_SHORT="worker-security"
@@ -59,7 +59,7 @@ case "$ROLE" in
     BORDER_FG="red"
     ROLE_ICON="🛡"
     MAX_TURNS=15
-    ALLOWED_TOOLS="Read,Grep,Glob,Bash"
+    ALLOWED_TOOLS="Read,Grep,Glob,Bash,Skill"
     ;;
   worker-test-auditor)
     ROLE_SHORT="worker-test-auditor"
@@ -68,7 +68,7 @@ case "$ROLE" in
     BORDER_FG="yellow"
     ROLE_ICON="🧪"
     MAX_TURNS=15
-    ALLOWED_TOOLS="Read,Grep,Glob,Bash"
+    ALLOWED_TOOLS="Read,Grep,Glob,Bash,Skill"
     ;;
   *)
     echo "Unknown role: $ROLE (expected: worker-coder | worker-tester | worker-code-reviewer | worker-security | worker-test-auditor)" >&2

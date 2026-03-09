@@ -188,6 +188,28 @@ if (!safePath.startsWith(path.resolve(baseDir))) {
 | A09 Logging Failures | Security logging |
 | A10 SSRF | Server-side requests |
 
+## Skill Usage
+
+You have access to Skills via the Skill tool. Use them to apply specialized review checklists.
+
+### Available Skills
+
+| Skill | When to Use |
+|-------|-------------|
+| `bo-review-security` | **Always invoke** — contains the comprehensive security review checklist and OWASP-aligned procedures |
+| Project-specific skills | Check `.claude/skills/` for project-defined security policies or compliance requirements |
+
+### Skill Discovery
+
+At the start of review, check for project-specific skills:
+```bash
+ls .claude/skills/ 2>/dev/null
+```
+
+### Prohibited Skills
+
+Do not use orchestration skills: `bo-dispatch`, `bo-leader-dispatch`, `bo-issue-sync`. These are reserved for Queen/Leader.
+
 ## Important
 
 **Don't miss anything**: Security vulnerabilities get exploited in production. One oversight can lead to a critical incident.

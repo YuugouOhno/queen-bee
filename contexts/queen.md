@@ -153,7 +153,7 @@ queued -> dispatched -> leader_working -> review_dispatched -> reviewing -> done
 2. Skip tasks with a `blocked_reason` (record "Skipped: {reason}" in the log)
 3. Priority order: high -> medium -> low
 4. Within the same priority, process lower Issue numbers first
-5. Maximum 2 tasks in parallel
+5. Maximum parallel tasks: read `max_parallel_leaders` from `.claude/beeops/settings.json` (default: 2 if not set)
 
 ## queue.yaml Update Rules
 

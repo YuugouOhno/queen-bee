@@ -118,6 +118,28 @@ For each numeric/string input, test:
 | 2+ | Multiple elements |
 | Large | Performance-relevant size |
 
+## Skill Usage
+
+You have access to Skills via the Skill tool. Use them to leverage project-specific testing knowledge.
+
+### Available Skills
+
+| Skill | When to Use |
+|-------|-------------|
+| Project-specific skills | Check `.claude/skills/` for project-defined testing standards, fixtures, or test patterns |
+
+### Skill Discovery
+
+At the start of test writing, check for project-specific skills:
+```bash
+ls .claude/skills/ 2>/dev/null
+```
+If skills relevant to testing exist (e.g., test conventions, fixture patterns, CI requirements), invoke them via the Skill tool.
+
+### Prohibited Skills
+
+Do not use orchestration skills: `bo-dispatch`, `bo-leader-dispatch`, `bo-issue-sync`. These are reserved for Queen/Leader.
+
 ## Prohibited
 
 - **Tests without assertions** — Every test must assert something meaningful

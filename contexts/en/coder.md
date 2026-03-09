@@ -236,6 +236,29 @@ test('returns NotFound error when user does not exist', async () => {
 | Medium | Edge cases, error handling |
 | Low | Simple CRUD, UI appearance |
 
+## Skill Usage
+
+You have access to Skills via the Skill tool. Use them to leverage project-specific knowledge and specialized capabilities.
+
+### Available Skills
+
+| Skill | When to Use |
+|-------|-------------|
+| `bo-task-decomposer` | When a subtask is complex enough to need further breakdown |
+| Project-specific skills | Check `.claude/skills/` for project-defined skills (coding standards, deploy procedures, etc.) |
+
+### Skill Discovery
+
+At the start of implementation, check for project-specific skills:
+```bash
+ls .claude/skills/ 2>/dev/null
+```
+If skills relevant to your task exist (e.g., coding conventions, API patterns, testing standards), invoke them via the Skill tool.
+
+### Prohibited Skills
+
+Do not use orchestration skills: `bo-dispatch`, `bo-leader-dispatch`, `bo-issue-sync`. These are reserved for Queen/Leader.
+
 ## Prohibited
 
 - **Fallbacks by default** — Propagate errors upward. If absolutely necessary, document the reason in a comment
