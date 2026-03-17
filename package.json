@@ -1,6 +1,6 @@
 {
   "name": "beeops",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "3-layer multi-agent orchestration system (Queen → Leader → Worker) powered by tmux",
   "author": "YuugouOhno",
   "license": "MIT",
@@ -33,6 +33,7 @@
     "claude-code"
   ],
   "scripts": {
+    "postinstall": "node -e \"console.log('\\n  beeops installed!\\n  Run the following to initialize your project:\\n\\n    npx beeops init\\n')\"",
     "test": "node --test test/cli.test.js",
     "prepublishOnly": "npm test"
   },

@@ -6,12 +6,34 @@ const path = require("path");
 const { execSync } = require("child_process");
 
 const PKG_DIR = path.resolve(__dirname, "..");
-const COMMAND_SRC = path.join(PKG_DIR, "command", "bo.md");
 const SKILLS_SRC = path.join(PKG_DIR, "skills");
+const COMMAND_SRC_DIR = path.join(PKG_DIR, "command");
 const CONTEXTS_SRC = path.join(PKG_DIR, "contexts");
 const HOOKS_DIR = path.join(PKG_DIR, "hooks");
 const HOOK_SRC = path.join(HOOKS_DIR, "bo-prompt-context.py");
 const HOME_DIR = process.env.HOME || process.env.USERPROFILE;
+
+const SKILL_NAMES = [
+  "bo-dispatch", "bo-leader-dispatch", "bo-task-decomposer", "bo-issue-sync",
+  "bo-review-backend", "bo-review-frontend", "bo-review-database",
+  "bo-review-operations", "bo-review-process", "bo-review-security",
+];
+
+function resolveSkillSrc(skillName, locale) {
+  const localePath = path.join(SKILLS_SRC, locale, skillName);
+  if (fs.existsSync(localePath)) return localePath;
+  const enPath = path.join(SKILLS_SRC, "en", skillName);
+  if (fs.existsSync(enPath)) return enPath;
+  return path.join(SKILLS_SRC, skillName); // root fallback (backward compat)
+}
+
+function resolveCommandSrc(locale) {
+  const localePath = path.join(COMMAND_SRC_DIR, locale, "bo.md");
+  if (fs.existsSync(localePath)) return localePath;
+  const enPath = path.join(COMMAND_SRC_DIR, "en", "bo.md");
+  if (fs.existsSync(enPath)) return enPath;
+  return path.join(COMMAND_SRC_DIR, "bo.md"); // root fallback (backward compat)
+}
 
 // ── Helpers ──
 
@@ -119,24 +141,38 @@ function checkPrerequisites() {
 
 // ── .gitignore management ──
 
-const GITIGNORE_ENTRIES = [
+// Always ignore: runtime artifacts generated during /bo execution
+const GITIGNORE_ALWAYS = [
+  "queue.yaml",
   ".claude/tasks/",
   ".claude/worktrees/",
 ];
 
-function updateGitignore(root) {
+// Ignore only for personal (local/global) installs.
+// --shared installs track these files so the whole team gets them.
+const GITIGNORE_LOCAL = [
+  ".claude/commands/bo.md",
+  ".claude/skills/bo-*/",
+  ".claude/beeops/locale",
+];
+
+function updateGitignore(root, hookMode) {
   const gitignorePath = path.join(root, ".gitignore");
   let content = "";
   if (fs.existsSync(gitignorePath)) {
     content = fs.readFileSync(gitignorePath, "utf8");
   }
 
+  const entries = hookMode === "shared"
+    ? GITIGNORE_ALWAYS
+    : [...GITIGNORE_ALWAYS, ...GITIGNORE_LOCAL];
+
   const lines = content.split("\n");
-  const missing = GITIGNORE_ENTRIES.filter((entry) => !lines.some((line) => line.trim() === entry));
+  const missing = entries.filter((entry) => !lines.some((line) => line.trim() === entry));
 
   if (missing.length === 0) return;
 
-  const block = "\n# beeops runtime artifacts\n" + missing.join("\n") + "\n";
+  const block = "\n# beeops\n" + missing.join("\n") + "\n";
   fs.writeFileSync(gitignorePath, content.trimEnd() + block);
   for (const entry of missing) {
     console.log(`  gitignore: added ${entry}`);
@@ -231,60 +267,165 @@ function updateSettingsHook(root, mode) {
   fs.writeFileSync(settingsFile, JSON.stringify(settings, null, 2) + "\n");
 }
 
+// ── Beeops settings helpers ──
+
+function readBeeopsSettings(root) {
+  const file = path.join(root, ".claude", "beeops", "settings.json");
+  if (!fs.existsSync(file)) return {};
+  try {
+    return JSON.parse(fs.readFileSync(file, "utf8"));
+  } catch {
+    return {};
+  }
+}
+
+function readLocale(root) {
+  const localeFile = path.join(root, ".claude", "beeops", "locale");
+  if (fs.existsSync(localeFile)) {
+    return fs.readFileSync(localeFile, "utf8").trim();
+  }
+  return "en";
+}
+
+function detectGithubUsername() {
+  try {
+    return execSync("gh api user --jq .login", { encoding: "utf8", stdio: "pipe" }).trim();
+  } catch {
+    try {
+      return execSync("git config github.user", { encoding: "utf8", stdio: "pipe" }).trim();
+    } catch {
+      return "";
+    }
+  }
+}
+
+function writeDefaultSettings(root) {
+  const file = path.join(root, ".claude", "beeops", "settings.json");
+  if (fs.existsSync(file)) {
+    console.log(`  settings: .claude/beeops/settings.json already exists, skipping`);
+    return;
+  }
+  const github_username = detectGithubUsername();
+  const defaults = {
+    assignee: github_username || "all",
+    github_username,
+    priority: "low",
+    skip_review: false,
+    max_parallel_leaders: 2,
+  };
+  ensureDir(path.dirname(file));
+  fs.writeFileSync(file, JSON.stringify(defaults, null, 2) + "\n");
+  console.log(`  created: .claude/beeops/settings.json (edit to customize /bo behavior)`);
+  if (github_username) {
+    console.log(`  github_username: detected as '${github_username}'`);
+  } else {
+    console.log(`  github_username: not detected — set it manually in .claude/beeops/settings.json`);
+  }
+}
+
 // ── init ──
 
-function init(opts) {
-  checkPrerequisites();
+function addToProtect(root, key) {
+  const file = path.join(root, ".claude", "beeops", "settings.json");
+  const settings = readBeeopsSettings(root);
+  const protect = Array.isArray(settings.protect) ? settings.protect : [];
+  if (!protect.includes(key)) {
+    protect.push(key);
+    settings.protect = protect;
+    ensureDir(path.dirname(file));
+    fs.writeFileSync(file, JSON.stringify(settings, null, 2) + "\n");
+    console.log(`  added "${key}" to protect in .claude/beeops/settings.json`);
+  }
+}
 
-  const root = getProjectRoot();
+async function confirmOverwrite(rl, label, protectKey) {
+  const answer = (await rl.question(`  Overwrite ${label}? [Y/n/protect]: `)).trim().toLowerCase();
+  if (answer === "n" || answer === "no") {
+    return { skip: true, addProtect: false };
+  }
+  if (answer === "protect" || answer === "p") {
+    return { skip: true, addProtect: true };
+  }
+  return { skip: false, addProtect: false }; // Y / Enter = yes
+}
+
+async function initCore(root, opts) {
   const claudeDir = path.join(root, ".claude");
+  const isFirstInit = !fs.existsSync(path.join(claudeDir, "commands", "bo.md"));
+  const settings = readBeeopsSettings(root);
+  const protect = Array.isArray(settings.protect) ? settings.protect : [];
 
-  console.log(`Initializing beeops in ${root}...\n`);
+  function isProtected(key) {
+    return protect.some((p) => p === key || key.startsWith(p + "/"));
+  }
 
-  // 1. Copy command
-  copyFile(COMMAND_SRC, path.join(claudeDir, "commands", "bo.md"));
+  // Set up interactive readline for update confirmations (TTY only)
+  let rl = null;
+  const interactive = !isFirstInit && process.stdin.isTTY;
+  if (interactive) {
+    const { createInterface } = await import("readline/promises");
+    rl = createInterface({ input: process.stdin, output: process.stdout });
+    console.log("  [update] Updating existing beeops installation.");
+    if (protect.length > 0) {
+      console.log(`  [protect] Protected (will be skipped): ${protect.join(", ")}`);
+    }
+    console.log(`\n  For each existing file you can answer:`);
+    console.log(`    Y / Enter  = overwrite`);
+    console.log(`    n          = skip this time`);
+    console.log(`    protect    = skip and add to protect (never overwrite again)\n`);
+  } else if (!isFirstInit) {
+    console.log("  [update] Updating existing beeops installation.\n");
+    if (protect.length > 0) {
+      console.log(`  [protect] Protected (will be skipped): ${protect.join(", ")}\n`);
+    }
+  }
 
-  // 2. Copy skills
-  copyDir(
-    path.join(SKILLS_SRC, "bo-dispatch"),
-    path.join(claudeDir, "skills", "bo-dispatch")
+  // 1. Copy command (locale-aware)
+  if (isProtected("command")) {
+    console.log(`  protected: .claude/commands/bo.md (skipped)`);
+  } else if (!isFirstInit && fs.existsSync(path.join(claudeDir, "commands", "bo.md"))) {
+    if (interactive) {
+      const { skip, addProtect } = await confirmOverwrite(rl, ".claude/commands/bo.md", "command");
+      if (addProtect) addToProtect(root, "command");
+      if (!skip) copyFile(resolveCommandSrc(opts.locale), path.join(claudeDir, "commands", "bo.md"));
+      else console.log(`  skipped: .claude/commands/bo.md`);
+    } else {
+      copyFile(resolveCommandSrc(opts.locale), path.join(claudeDir, "commands", "bo.md"));
+    }
+  } else {
+    copyFile(resolveCommandSrc(opts.locale), path.join(claudeDir, "commands", "bo.md"));
+  }
+
+  // 2. Copy skills (locale-aware)
+  // Group: ask once for "skills" category if any exist
+  const existingSkills = SKILL_NAMES.filter(
+    (s) => !isProtected("skills") && !isProtected(`skills/${s}`) &&
+      !isFirstInit && fs.existsSync(path.join(claudeDir, "skills", s, "SKILL.md"))
   );
-  copyDir(
-    path.join(SKILLS_SRC, "bo-leader-dispatch"),
-    path.join(claudeDir, "skills", "bo-leader-dispatch")
-  );
-  copyDir(
-    path.join(SKILLS_SRC, "bo-task-decomposer"),
-    path.join(claudeDir, "skills", "bo-task-decomposer")
-  );
-  copyDir(
-    path.join(SKILLS_SRC, "bo-issue-sync"),
-    path.join(claudeDir, "skills", "bo-issue-sync")
-  );
-  copyDir(
-    path.join(SKILLS_SRC, "bo-review-backend"),
-    path.join(claudeDir, "skills", "bo-review-backend")
-  );
-  copyDir(
-    path.join(SKILLS_SRC, "bo-review-frontend"),
-    path.join(claudeDir, "skills", "bo-review-frontend")
-  );
-  copyDir(
-    path.join(SKILLS_SRC, "bo-review-database"),
-    path.join(claudeDir, "skills", "bo-review-database")
-  );
-  copyDir(
-    path.join(SKILLS_SRC, "bo-review-operations"),
-    path.join(claudeDir, "skills", "bo-review-operations")
-  );
-  copyDir(
-    path.join(SKILLS_SRC, "bo-review-process"),
-    path.join(claudeDir, "skills", "bo-review-process")
-  );
-  copyDir(
-    path.join(SKILLS_SRC, "bo-review-security"),
-    path.join(claudeDir, "skills", "bo-review-security")
-  );
+  let skipAllSkills = false;
+  if (interactive && existingSkills.length > 0) {
+    console.log(`  The following skills already exist:`);
+    existingSkills.forEach((s) => console.log(`    .claude/skills/${s}/SKILL.md`));
+    const answer = (await rl.question(`  Overwrite all skills? [Y/n/protect]: `)).trim().toLowerCase();
+    if (answer === "n" || answer === "no") {
+      skipAllSkills = true;
+      console.log(`  skipped: all skills`);
+    } else if (answer === "protect" || answer === "p") {
+      skipAllSkills = true;
+      addToProtect(root, "skills");
+    }
+  }
+
+  for (const skill of SKILL_NAMES) {
+    const skillKey = `skills/${skill}`;
+    if (isProtected("skills") || isProtected(skillKey)) {
+      console.log(`  protected: .claude/skills/${skill}/ (skipped)`);
+    } else if (skipAllSkills && existingSkills.includes(skill)) {
+      // already handled above
+    } else {
+      copyDir(resolveSkillSrc(skill, opts.locale), path.join(claudeDir, "skills", skill));
+    }
+  }
 
   // 3. Clean up removed beeops skills if exists
   for (const old of ["bo-log-writer", "bo-self-improver"]) {
@@ -296,7 +437,7 @@ function init(opts) {
   }
 
   // 4. Update .gitignore (runtime artifacts should not be tracked)
-  updateGitignore(root);
+  updateGitignore(root, opts.hookMode);
 
   // 5. Register hooks (UserPromptSubmit)
   updateSettingsHook(root, opts.hookMode);
@@ -307,18 +448,66 @@ function init(opts) {
   fs.writeFileSync(path.join(boDir, "locale"), opts.locale + "\n");
   console.log(`  locale: ${opts.locale} (saved to .claude/beeops/locale)`);
 
-  // 7. Copy contexts if --with-contexts
+  // 7. Write default settings.json (only on first init)
+  writeDefaultSettings(root);
+
+  // 8. Copy contexts if --with-contexts
   if (opts.withContexts) {
     const destContexts = path.join(claudeDir, "beeops", "contexts");
-    copyDir(CONTEXTS_SRC, destContexts);
-    console.log("\n  Contexts copied to .claude/beeops/contexts/ for customization.");
-    console.log("  Edit these files to customize agent behavior.");
-    console.log("  Delete a file to fall back to the package default.");
+    if (isProtected("contexts")) {
+      console.log(`  protected: .claude/beeops/contexts/ (skipped)`);
+    } else if (!isFirstInit && fs.existsSync(destContexts)) {
+      if (interactive) {
+        const { skip, addProtect } = await confirmOverwrite(rl, ".claude/beeops/contexts/", "contexts");
+        if (addProtect) addToProtect(root, "contexts");
+        if (!skip) {
+          copyDir(CONTEXTS_SRC, destContexts);
+          console.log("  Contexts copied. Edit files to customize agent behavior.");
+        } else {
+          console.log(`  skipped: .claude/beeops/contexts/`);
+        }
+      } else {
+        copyDir(CONTEXTS_SRC, destContexts);
+        console.log("  Contexts copied. Edit files to customize agent behavior.");
+      }
+    } else {
+      copyDir(CONTEXTS_SRC, destContexts);
+      console.log("\n  Contexts copied to .claude/beeops/contexts/ for customization.");
+      console.log("  Edit these files to customize agent behavior.");
+      console.log("  Delete a file to fall back to the package default.");
+    }
   }
+
+  if (rl) rl.close();
+}
+
+function printSettingsSummary(root) {
+  const file = path.join(root, ".claude", "beeops", "settings.json");
+  if (!fs.existsSync(file)) return;
+  const settings = readBeeopsSettings(root);
+  console.log("\nCurrent settings (.claude/beeops/settings.json):");
+  for (const [k, v] of Object.entries(settings)) {
+    console.log(`  ${k}: ${JSON.stringify(v)}`);
+  }
+  console.log("\nTo change these, edit .claude/beeops/settings.json directly.");
+  console.log('To protect files from future updates, add "protect" to settings.json:');
+  console.log('  "protect": ["skills", "command", "contexts"]');
+}
+
+async function init(opts) {
+  checkPrerequisites();
+
+  const root = getProjectRoot();
+  console.log(`Initializing beeops in ${root}...\n`);
+
+  await initCore(root, opts);
 
   console.log("\nbeeops initialized successfully!");
   console.log("Run /bo in Claude Code to start the Queen.");
+  printSettingsSummary(root);
 }
+
+const SUPPORTED_LOCALES = ["en", "ja"];
 
 // ── check ──
 
@@ -434,6 +623,7 @@ function printHelp() {
   console.log("  -g, --global     Register hook in ~/.claude/settings.json (all projects)");
   console.log("  --with-contexts  Copy default contexts for customization");
   console.log("  --locale <lang>  Set locale (default: en, available: en, ja)\n");
+  console.log("To change settings after init, edit .claude/beeops/settings.json directly.\n");
   console.log("Examples:");
   console.log("  npx beeops init");
   console.log("  npx beeops init --shared --locale ja");
@@ -497,15 +687,17 @@ function parseArgs(argv) {
 // ── Main ──
 const { command, opts } = parseArgs(process.argv);
 
-switch (command) {
-  case "init":
-  case "update":
-    init(opts);
-    break;
-  case "check":
-    check();
-    break;
-  default:
-    printHelp();
-    process.exit(command ? 1 : 0);
-}
+(async () => {
+  switch (command) {
+    case "init":
+    case "update":
+      await init(opts);
+      break;
+    case "check":
+      check();
+      break;
+    default:
+      printHelp();
+      process.exit(command ? 1 : 0);
+  }
+})();

@@ -43,7 +43,7 @@ bo-prompt-context.py resolves context files in the following order:
 ```
 beeops/
 ├── package.json                         # npm package definition
-├── bin/beeops.js                     # CLI: init / update / check
+├── bin/beeops.js                     # CLI: init / update / check / config
 ├── scripts/
 │   ├── launch-leader.sh                 # Launch Leader/Review Leader in tmux window
 │   └── launch-worker.sh                 # Launch Worker in tmux pane
@@ -78,18 +78,24 @@ beeops/
 │   ├── test-auditor.md                # Test auditor context (root fallback)
 │   └── default.md                       # Default context (no mode active)
 ├── skills/
-│   ├── bo-dispatch/SKILL.md             # Queen → Leader dispatch procedure
-│   ├── bo-leader-dispatch/SKILL.md      # Leader → Worker dispatch procedure
-│   ├── bo-task-decomposer/SKILL.md    # Task decomposition skill
-│   ├── bo-issue-sync/SKILL.md         # GitHub Issue → queue.yaml sync
-│   ├── bo-review-backend/SKILL.md          # Backend code review
-│   ├── bo-review-frontend/SKILL.md         # Frontend code review
-│   ├── bo-review-database/SKILL.md         # Database/SQL review
-│   ├── bo-review-operations/SKILL.md       # Infrastructure/DevOps review
-│   ├── bo-review-process/SKILL.md          # Development process review
+│   ├── en/                              # English locale skills
+│   │   ├── bo-dispatch/SKILL.md
+│   │   └── ... (10 skills)
+│   ├── ja/                              # Japanese locale skills (add to customize)
+│   ├── bo-dispatch/SKILL.md             # Root fallback (English, backward compat)
+│   ├── bo-leader-dispatch/SKILL.md
+│   ├── bo-task-decomposer/SKILL.md
+│   ├── bo-issue-sync/SKILL.md
+│   ├── bo-review-backend/SKILL.md
+│   ├── bo-review-frontend/SKILL.md
+│   ├── bo-review-database/SKILL.md
+│   ├── bo-review-operations/SKILL.md
+│   ├── bo-review-process/SKILL.md
 │   └── bo-review-security/SKILL.md         # Security review (cross-cutting)
 └── command/
-    └── bo.md                            # /bo slash command definition
+    ├── en/bo.md                         # English /bo command
+    ├── ja/bo.md                         # Japanese /bo command (add to customize)
+    └── bo.md                            # Root fallback (English, backward compat)
 ```
 
 ### Files Generated in Target Project
@@ -140,6 +146,29 @@ beeops/
 | `-g`, `--global` | `~/.claude/settings.json` | Global (all projects) |
 | `--with-contexts` | — | Deploy contexts for customization |
 | `--locale <lang>` | — | Set locale (default: en, available: en, ja) |
+
+### Skill/Command Locale Resolution (3-step fallback)
+
+`init` and `config locale` resolve skill/command sources in order:
+
+```
+1. skills/<locale>/<skillName>/   ← locale-specific version
+2. skills/en/<skillName>/         ← English fallback
+3. skills/<skillName>/            ← root fallback (backward compat)
+```
+
+Same pattern for commands: `command/<locale>/bo.md` → `command/en/bo.md` → `command/bo.md`
+
+To add Japanese skills, create `skills/ja/<skillName>/SKILL.md` in the package.
+
+### config Command
+
+```bash
+npx beeops config --list          # Show current locale and settings
+npx beeops config locale ja       # Change locale, re-copy skills/command
+```
+
+`config locale` re-copies skills and command for the new locale without touching existing hook registration or contexts.
 
 ## Settings File (`.claude/beeops/settings.json`)
 
