@@ -25,7 +25,29 @@ npx beeops init
 
 ## Quick Start
 
-Run `/bee-dev` in Claude Code to start the Queen. She'll sync GitHub Issues, dispatch Leaders to git worktrees, and manage the full workflow — from implementation through code review and CI checks.
+After installation, in Claude Code:
+
+- **`/bee-dev`** — Sync GitHub Issues and run the full Queen → Leader → Worker development pipeline
+- **`/bee-content`** — Run a Creator ↔ Reviewer quality loop to iteratively improve content
+
+Each agent runs as a separate Claude Code instance in a tmux pane. Attach with `tmux attach -t bee-dev` to watch in real-time.
+
+## Architecture
+
+- **Queen** (L1) — Reads GitHub Issues, builds a queue, dispatches Leaders and Review Leaders
+- **Leader** (L2) — Decomposes an issue into subtasks, launches Workers in parallel, creates PRs
+- **Review Leader** (L2) — Launches review Workers, aggregates findings, approves or requests fixes
+- **Workers** (L3) — Execute a single subtask: coding, testing, or reviewing
+
+The system includes **10 specialized skills**, **1 hook** (UserPromptSubmit for context injection), and **locale support** (en/ja) with a 4-step fallback chain.
+
+Workers receive multi-layer context injection (base + specialization), so each role gets tailored instructions while sharing common autonomous-operation rules.
+
+## Commands
+
+### `/bee-dev` — Development Orchestration
+
+Runs the full Queen → Leader → Worker pipeline for GitHub Issues. Syncs issues, dispatches Leaders to isolated git worktrees, implements, reviews, and monitors CI.
 
 ```
 Queen (orchestrator)
@@ -38,20 +60,23 @@ Queen (orchestrator)
        └─ Worker (test-auditor)
 ```
 
-Each layer runs as a separate Claude Code instance in a tmux pane. Communication flows through YAML reports and `tmux wait-for` signals. No external servers or databases required.
+### `/bee-content` — Content Quality Loop
 
-Attach with `tmux attach -t bee-dev` to watch all agents work in real-time.
+Runs a Creator ↔ Reviewer loop to iteratively improve content until it meets a quality threshold.
 
-## Architecture
+```
+/bee-content "Write a blog post about beeops" --criteria "Accurate, under 800 words" --threshold 85
+```
 
-- **Queen** (L1) — Reads GitHub Issues, builds a queue, dispatches Leaders and Review Leaders
-- **Leader** (L2) — Decomposes an issue into subtasks, launches Workers in parallel, creates PRs
-- **Review Leader** (L2) — Launches review Workers, aggregates findings, approves or requests fixes
-- **Workers** (L3) — Execute a single subtask: coding, testing, or reviewing
+The Creator writes content and self-scores it. The Reviewer evaluates independently and provides feedback. The loop continues until the threshold is met or `--max-loops` is reached.
 
-The system includes **10 specialized skills**, **1 hook** (UserPromptSubmit for context injection), and **locale support** (en/ja) with a 4-step fallback chain.
-
-Workers receive multi-layer context injection (base + specialization), so each role gets tailored instructions while sharing common autonomous-operation rules.
+| Option | Description |
+|--------|-------------|
+| `--criteria "..."` | Quality criteria for the content |
+| `--threshold N` | Score threshold to accept (0–100, default: 80) |
+| `--max-loops N` | Maximum Creator ↔ Reviewer iterations (default: 3) |
+| `--count N` | Number of pieces to generate in batch mode |
+| `--name <name>` | Session name for resuming later |
 
 ## Configuration
 

@@ -59,6 +59,41 @@ npx beeops init
 - 4つのスキル（dispatch, leader-dispatch, task-decomposer, issue-sync）
 - コンテキスト注入用の UserPromptSubmit フック
 
+## コマンド
+
+### `/bee-dev` — 開発オーケストレーション
+
+GitHub Issue に対して Queen → Leader → Worker の全パイプラインを実行します。Issue を同期し、git worktree で隔離された環境に Leader をディスパッチし、実装・レビュー・CI チェックまで自動で行います。
+
+```
+Queen (L1)
+  ├─ Leader (L2)          – Issue をサブタスクに分解、Worker をディスパッチ、PR を作成
+  │    ├─ Worker (coder)
+  │    └─ Worker (tester)
+  └─ Review Leader (L2)   – レビュー Worker をディスパッチ、結果を集約
+       ├─ Worker (code-reviewer)
+       ├─ Worker (security)
+       └─ Worker (test-auditor)
+```
+
+### `/bee-content` — コンテンツ品質ループ
+
+Creator と Reviewer が反復してコンテンツを改善し、品質スコアが閾値を超えるまでループします。
+
+```
+/bee-content "beeopsについてのブログ記事を書いて" --criteria "正確、800字以内" --threshold 85
+```
+
+Creator がコンテンツを書いて自己採点し、Reviewer が独立して評価・フィードバックします。閾値に達するか `--max-loops` に達するまでループが続きます。
+
+| オプション | 説明 |
+|-----------|------|
+| `--criteria "..."` | コンテンツの品質基準 |
+| `--threshold N` | 合格スコア（0–100、デフォルト: 80） |
+| `--max-loops N` | Creator ↔ Reviewer の最大ループ回数（デフォルト: 3） |
+| `--count N` | バッチモードで生成する件数 |
+| `--name <name>` | 後で再開するためのセッション名 |
+
 ## init オプション
 
 ```bash
