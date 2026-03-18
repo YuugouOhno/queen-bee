@@ -244,7 +244,7 @@ You have access to Skills via the Skill tool. Use them to leverage project-speci
 
 | Skill | When to Use |
 |-------|-------------|
-| `bo-task-decomposer` | When a subtask is complex enough to need further breakdown |
+| `bee-task-decomposer` | When a subtask is complex enough to need further breakdown |
 | Project-specific skills | Check `.claude/skills/` for project-defined skills (coding standards, deploy procedures, etc.) |
 
 ### Skill Discovery
@@ -257,7 +257,7 @@ If skills relevant to your task exist (e.g., coding conventions, API patterns, t
 
 ### Prohibited Skills
 
-Do not use orchestration skills: `bo-dispatch`, `bo-leader-dispatch`, `bo-issue-sync`. These are reserved for Queen/Leader.
+Do not use orchestration skills: `bee-dispatch`, `bee-leader-dispatch`, `bee-issue-sync`. These are reserved for Queen/Leader.
 
 ## Prohibited
 

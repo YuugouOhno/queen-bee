@@ -125,10 +125,10 @@ A review that finds nothing wrong is either a perfect PR (rare) or a lazy review
 
 When review skills are available, invoke specialized review skills based on the type of changed files:
 
-- Frontend changes (`.tsx`, `.vue`, `.jsx`, `.css`) → Invoke `bo-review-frontend` + `bo-review-security` skills
-- Backend changes (`.ts`, `.py`, server-side code) → Invoke `bo-review-backend` + `bo-review-security` skills
-- Database changes (`.sql`, `prisma`, `migration`) → Invoke `bo-review-database` + `bo-review-security` skills
-- Infrastructure changes (`Dockerfile`, `k8s`, CI/CD) → Invoke `bo-review-operations` skill
+- Frontend changes (`.tsx`, `.vue`, `.jsx`, `.css`) → Invoke `bee-review-frontend` + `bee-review-security` skills
+- Backend changes (`.ts`, `.py`, server-side code) → Invoke `bee-review-backend` + `bee-review-security` skills
+- Database changes (`.sql`, `prisma`, `migration`) → Invoke `bee-review-database` + `bee-review-security` skills
+- Infrastructure changes (`Dockerfile`, `k8s`, CI/CD) → Invoke `bee-review-operations` skill
 
 If the relevant skills are not installed, skip routing and review using the perspectives above.
 

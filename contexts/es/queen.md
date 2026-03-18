@@ -19,7 +19,7 @@ Las siguientes acciones omitirán la visualización de ventanas tmux, los inform
 - Ejecutar comandos de recopilación de información como `gh pr checks`
 - Esperar mediante `tmux wait-for`
 - Mover informes con `mv` (a processed/)
-- Invocar herramientas Skill (bo-dispatch, bo-issue-sync)
+- Invocar herramientas Skill (bee-dispatch, bee-issue-sync)
 
 ## Reglas de operación autónoma
 
@@ -41,7 +41,7 @@ Fase 0: Análisis de instrucciones
   +-- Sin instrucciones o "Procesar Issues" -> Ir a Fase 1
   |
   v
-Fase 1: Invocar Skill "bo-issue-sync" (solo cuando existen tareas de tipo Issue)
+Fase 1: Invocar Skill "bee-issue-sync" (solo cuando existen tareas de tipo Issue)
   -> Sincronizar Issues de GitHub con queue.yaml
   |
   v
@@ -50,7 +50,7 @@ Fase 2: Bucle basado en eventos
   |   |
   |   v
   |   Ejecutar según el tipo de tarea:
-  |   +-- type: issue -> Invocar Skill "bo-dispatch" para lanzar Leader/Review Leader
+  |   +-- type: issue -> Invocar Skill "bee-dispatch" para lanzar Leader/Review Leader
   |   +-- type: adhoc -> Ejecutar tú mismo o delegar en Leader según el asignado
   |   |
   |   v
@@ -80,7 +80,7 @@ Analiza las instrucciones recibidas (prompt) y formula un plan de ejecución.
 
 ### Procedimiento de descomposición de tareas
 
-1. Invocar **Skill: `bo-task-decomposer`** para descomponer las instrucciones en tareas
+1. Invocar **Skill: `bee-task-decomposer`** para descomponer las instrucciones en tareas
 2. Añadir los resultados descompuestos como tareas en queue.yaml (en el siguiente formato):
 
 ```yaml
@@ -101,8 +101,8 @@ Analiza las instrucciones recibidas (prompt) y formula un plan de ejecución.
 
 | Naturaleza de la tarea | assignee | Método de ejecución |
 |------------------------|----------|---------------------|
-| Implementación/modificación de código | leader | Lanzar Leader mediante bo-dispatch |
-| Revisión de código/verificación de PR | review-leader | Lanzar Review Leader mediante bo-dispatch |
+| Implementación/modificación de código | leader | Lanzar Leader mediante bee-dispatch |
+| Revisión de código/verificación de PR | review-leader | Lanzar Review Leader mediante bee-dispatch |
 | Verificaciones CI, comandos gh, comprobaciones de estado, etc. | orchestrator | Ejecutar tú mismo usando Bash/Read etc. |
 
 ### Coexistencia con tareas de tipo Issue
@@ -115,7 +115,7 @@ Analiza las instrucciones recibidas (prompt) y formula un plan de ejecución.
 
 1. Ejecutar `cat $BO_CONTEXTS_DIR/agent-modes.json` mediante Bash y cargarlo (usar la sección roles)
 2. **Fase 0**: Analizar las instrucciones recibidas. Si existen instrucciones específicas, descomponer en tareas y añadir a queue.yaml
-3. Si se necesita sincronización de Issues: invocar **Skill: `bo-issue-sync`** -> añadir tareas de issue a queue.yaml
+3. Si se necesita sincronización de Issues: invocar **Skill: `bee-issue-sync`** -> añadir tareas de issue a queue.yaml
 4. Entrar en el bucle basado en eventos de la Fase 2
 
 ## Reglas de invocación de herramientas
@@ -185,13 +185,13 @@ review_window: "review-42"      # nombre de la ventana de revisión
 ### type: issue (o assignee: leader)
 
 **Primero, comprobar si la tarea ya tiene un PR** (es decir, el campo `pr` no es nulo cuando el estado es `review_dispatched`):
-- **PR existe** → Omitir Leader. Lanzar directamente Review Leader mediante bo-dispatch para verificar que el PR existente cumple los requisitos del Issue.
+- **PR existe** → Omitir Leader. Lanzar directamente Review Leader mediante bee-dispatch para verificar que el PR existente cumple los requisitos del Issue.
 - **Sin PR** → Flujo normal: lanzar Leader primero.
 
 Tras determinar el punto de inicio:
-1. Invocar **Skill: `bo-dispatch`** para lanzar un Leader (o Review Leader si existe PR)
-2. Basándose en el resultado (contenido del informe) devuelto por bo-dispatch:
-   - Leader completado -> actualizar a `review_dispatched` -> lanzar Review Leader (invocar bo-dispatch de nuevo)
+1. Invocar **Skill: `bee-dispatch`** para lanzar un Leader (o Review Leader si existe PR)
+2. Basándose en el resultado (contenido del informe) devuelto por bee-dispatch:
+   - Leader completado -> actualizar a `review_dispatched` -> lanzar Review Leader (invocar bee-dispatch de nuevo)
    - Review Leader aprueba -> `done`
    - Review Leader fix_required -> si review_count < 3, establecer a `fixing` -> relanzar Leader (modo fix, usando rama existente)
    - Fallo -> actualizar a `error`
@@ -202,7 +202,7 @@ Tras determinar el punto de inicio:
 3. Actualizar estado a `done` o `error`
 
 ### type: adhoc, assignee: leader
-1. Invocar **Skill: `bo-dispatch`**. Pasar el campo `instruction` como prompt al Leader
+1. Invocar **Skill: `bee-dispatch`**. Pasar el campo `instruction` como prompt al Leader
 2. Seguir el mismo flujo que las tareas de issue a partir de aquí
 
 4. Tras completar el procesamiento, volver al paso 1

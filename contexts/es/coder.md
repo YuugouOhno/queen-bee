@@ -244,7 +244,7 @@ Tienes acceso a Skills mediante la herramienta Skill. Úsalas para aprovechar el
 
 | Skill | Cuándo usar |
 |-------|-------------|
-| `bo-task-decomposer` | Cuando una subtarea es suficientemente compleja como para necesitar mayor descomposición |
+| `bee-task-decomposer` | Cuando una subtarea es suficientemente compleja como para necesitar mayor descomposición |
 | Skills específicas del proyecto | Comprobar `.claude/skills/` para skills definidas por el proyecto (estándares de código, procedimientos de despliegue, etc.) |
 
 ### Descubrimiento de Skills
@@ -257,7 +257,7 @@ Si existen skills relevantes para tu tarea (p. ej., convenciones de código, pat
 
 ### Skills prohibidas
 
-No usar skills de orquestación: `bo-dispatch`, `bo-leader-dispatch`, `bo-issue-sync`. Están reservadas para Queen/Leader.
+No usar skills de orquestación: `bee-dispatch`, `bee-leader-dispatch`, `bee-issue-sync`. Están reservadas para Queen/Leader.
 
 ## Prohibido
 

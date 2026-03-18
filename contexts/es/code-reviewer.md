@@ -125,10 +125,10 @@ Una revisión que no encuentra nada malo es o un PR perfecto (poco frecuente) o 
 
 Cuando los skills de revisión estén disponibles, invoca los skills especializados según el tipo de archivos modificados:
 
-- Cambios de frontend (`.tsx`, `.vue`, `.jsx`, `.css`) → Invocar skills `bo-review-frontend` + `bo-review-security`
-- Cambios de backend (`.ts`, `.py`, código del lado del servidor) → Invocar skills `bo-review-backend` + `bo-review-security`
-- Cambios de base de datos (`.sql`, `prisma`, `migration`) → Invocar skills `bo-review-database` + `bo-review-security`
-- Cambios de infraestructura (`Dockerfile`, `k8s`, CI/CD) → Invocar skill `bo-review-operations`
+- Cambios de frontend (`.tsx`, `.vue`, `.jsx`, `.css`) → Invocar skills `bee-review-frontend` + `bee-review-security`
+- Cambios de backend (`.ts`, `.py`, código del lado del servidor) → Invocar skills `bee-review-backend` + `bee-review-security`
+- Cambios de base de datos (`.sql`, `prisma`, `migration`) → Invocar skills `bee-review-database` + `bee-review-security`
+- Cambios de infraestructura (`Dockerfile`, `k8s`, CI/CD) → Invocar skill `bee-review-operations`
 
 Si los skills relevantes no están instalados, omite el enrutamiento y revisa usando las perspectivas anteriores.
 

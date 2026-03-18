@@ -19,7 +19,7 @@
 - `gh pr checks` 等の情報取得コマンド
 - `tmux wait-for` による待機
 - レポートの `mv` (processed/ へ移動)
-- Skill ツールの発動 (bo-dispatch, bo-issue-sync)
+- Skill ツールの発動 (bee-dispatch, bee-issue-sync)
 
 ## 自律稼働ルール
 
@@ -41,7 +41,7 @@ Phase 0: 指示解析
   └─ 指示なし or "Issue を消化" → Phase 1 へ
   │
   ▼
-Phase 1: Skill「bo-issue-sync」を発動（Issue 系タスクがある場合のみ）
+Phase 1: Skill「bee-issue-sync」を発動（Issue 系タスクがある場合のみ）
   → GitHub Issues → queue.yaml 同期
   │
   ▼
@@ -50,7 +50,7 @@ Phase 2: イベント駆動ループ
   │   │
   │   ▼
   │   タスク type に応じて実行:
-  │   ├─ type: issue → Skill「bo-dispatch」で Leader/Review Leader 起動
+  │   ├─ type: issue → Skill「bee-dispatch」で Leader/Review Leader 起動
   │   └─ type: adhoc → assignee に応じて自分で実行 or Leader に委譲
   │   │
   │   ▼
@@ -80,7 +80,7 @@ Phase 2: イベント駆動ループ
 
 ### タスク分解の手順
 
-1. **Skill: `bo-task-decomposer`** を発動し、指示をタスクに分解する
+1. **Skill: `bee-task-decomposer`** を発動し、指示をタスクに分解する
 2. 分解結果を queue.yaml のタスクとして追加（以下の形式）:
 
 ```yaml
@@ -101,8 +101,8 @@ Phase 2: イベント駆動ループ
 
 | タスクの性質 | assignee | 実行方法 |
 |-------------|----------|---------|
-| コード実装・修正 | leader | bo-dispatch で Leader 起動 |
-| コードレビュー・PR確認 | review-leader | bo-dispatch で Review Leader 起動 |
+| コード実装・修正 | leader | bee-dispatch で Leader 起動 |
+| コードレビュー・PR確認 | review-leader | bee-dispatch で Review Leader 起動 |
 | CI確認・gh コマンド・状態チェック等 | orchestrator | 自分で Bash/Read 等を使って実行 |
 
 ### Issue 系タスクとの共存
@@ -115,7 +115,7 @@ Phase 2: イベント駆動ループ
 
 1. `cat $BO_CONTEXTS_DIR/agent-modes.json` を Bash で実行して読み込む（roles セクションを使用）
 2. **Phase 0**: 受け取った指示を解析。具体的指示があればタスク分解して queue.yaml に追加
-3. Issue 同期が必要な場合: **Skill: `bo-issue-sync`** を発動 → queue.yaml に issue タスク追加
+3. Issue 同期が必要な場合: **Skill: `bee-issue-sync`** を発動 → queue.yaml に issue タスク追加
 4. Phase 2 のイベント駆動ループに入る
 
 ## ツール呼び出しルール
@@ -185,13 +185,13 @@ review_window: "review-42"      # review window 名
 ### type: issue（または assignee: leader）
 
 **まず、タスクに既存 PR があるか確認する**（`pr` フィールドが非null かつ status が `review_dispatched`）:
-- **PR あり** → Leader をスキップ。bo-dispatch で Review Leader を直接起動し、既存 PR が Issue の要件を満たしているか検証する。
+- **PR あり** → Leader をスキップ。bee-dispatch で Review Leader を直接起動し、既存 PR が Issue の要件を満たしているか検証する。
 - **PR なし** → 通常フロー: まず Leader を起動。
 
 開始ポイントを決定した後:
-1. **Skill: `bo-dispatch`** を発動し、Leader（または PR 既存なら Review Leader）を起動
-2. bo-dispatch が返す結果（レポート内容）に基づいて判定:
-   - Leader completed → `review_dispatched` に更新 → Review Leader 起動（再度 bo-dispatch）
+1. **Skill: `bee-dispatch`** を発動し、Leader（または PR 既存なら Review Leader）を起動
+2. bee-dispatch が返す結果（レポート内容）に基づいて判定:
+   - Leader completed → `review_dispatched` に更新 → Review Leader 起動（再度 bee-dispatch）
    - Review Leader approve → `done`
    - Review Leader fix_required → review_count < 3 なら `fixing` → Leader 再起動（fix mode、既存ブランチを再利用）
    - 失敗 → `error` に更新
@@ -202,7 +202,7 @@ review_window: "review-42"      # review window 名
 3. status を `done` または `error` に更新
 
 ### type: adhoc, assignee: leader
-1. **Skill: `bo-dispatch`** を発動。`instruction` フィールドをプロンプトとして Leader に渡す
+1. **Skill: `bee-dispatch`** を発動。`instruction` フィールドをプロンプトとして Leader に渡す
 2. 以降は issue タスクと同じフロー
 
 4. 処理が終わったら 1 に戻る

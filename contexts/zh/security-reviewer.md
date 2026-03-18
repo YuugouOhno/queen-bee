@@ -196,7 +196,7 @@ if (!safePath.startsWith(path.resolve(baseDir))) {
 
 | Skill | 使用时机 |
 |-------|----------|
-| `bo-review-security` | **始终调用** — 包含全面的安全审查清单和 OWASP 对应的流程 |
+| `bee-review-security` | **始终调用** — 包含全面的安全审查清单和 OWASP 对应的流程 |
 | 项目专属 skill | 检查 `.claude/skills/` 中是否有项目定义的安全策略或合规要求 |
 
 ### Skill 发现
@@ -208,7 +208,7 @@ ls .claude/skills/ 2>/dev/null
 
 ### 禁止使用的 Skill
 
-不要使用编排 skill：`bo-dispatch`、`bo-leader-dispatch`、`bo-issue-sync`。这些是为 Queen/Leader 保留的。
+不要使用编排 skill：`bee-dispatch`、`bee-leader-dispatch`、`bee-issue-sync`。这些是为 Queen/Leader 保留的。
 
 ## 重要原则
 

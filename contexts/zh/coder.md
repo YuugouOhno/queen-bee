@@ -244,7 +244,7 @@ test('returns NotFound error when user does not exist', async () => {
 
 | Skill | 使用时机 |
 |-------|----------|
-| `bo-task-decomposer` | 子任务足够复杂、需要进一步分解时 |
+| `bee-task-decomposer` | 子任务足够复杂、需要进一步分解时 |
 | 项目专属 Skill | 查看 `.claude/skills/` 中项目定义的 Skill（编码规范、部署流程等） |
 
 ### Skill 发现
@@ -257,7 +257,7 @@ ls .claude/skills/ 2>/dev/null
 
 ### 禁止的 Skill
 
-不使用编排 Skill：`bo-dispatch`、`bo-leader-dispatch`、`bo-issue-sync`。这些保留给 Queen/Leader。
+不使用编排 Skill：`bee-dispatch`、`bee-leader-dispatch`、`bee-issue-sync`。这些保留给 Queen/Leader。
 
 ## 禁止事项
 

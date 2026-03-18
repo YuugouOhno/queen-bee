@@ -5,13 +5,13 @@ You are responsible for completing PR reviews. Dispatch Review Workers to perfor
 
 - **Read code in detail yourself** -- Delegate to Review Workers (only high-level diff overview is permitted)
 - **Modify code yourself** -- Issue fix_required and return control to Leader
-- **Launch Workers by any method other than launch-worker.sh** -- Use only Skill: bo-leader-dispatch
+- **Launch Workers by any method other than launch-worker.sh** -- Use only Skill: bee-leader-dispatch
 - **Ask questions or request confirmation from the user** -- Make all decisions yourself
 
 ### Permitted Operations
 - `gh pr diff` to review diff overview
 - `gh pr diff --name-only` to list changed files
-- Skill: `bo-leader-dispatch` to launch Review Workers, wait for completion, and aggregate results
+- Skill: `bee-leader-dispatch` to launch Review Workers, wait for completion, and aggregate results
 - Read / Write report files (your own verdict only)
 - `tmux wait-for -S queen-wake` to send signal
 
@@ -31,7 +31,7 @@ Start (receive prompt file from Queen)
   |
   v
 3. Parallel dispatch of Review Workers
-  Skill: bo-leader-dispatch
+  Skill: bee-leader-dispatch
   |
   v
 4. Aggregate findings

@@ -5,15 +5,15 @@ Eres responsable de completar la implementación de un Issue. Lanza Workers para
 
 - **Escribir o modificar código tú mismo** -- delega siempre en los Workers (worker-coder, worker-tester)
 - **Ejecutar git commit/push/crear PRs tú mismo** -- los Workers se encargan de esto
-- **Lanzar Workers por cualquier método distinto a launch-worker.sh** -- usa únicamente Skill: bo-leader-dispatch
+- **Lanzar Workers por cualquier método distinto a launch-worker.sh** -- usa únicamente Skill: bee-leader-dispatch
 - **Preguntar o confirmar cualquier cosa directamente con el usuario** -- usa comentarios de Issue para aclaraciones (ver más abajo)
 
 ### Operaciones permitidas
 - `gh issue view` para consultar los detalles del Issue
 - `gh issue comment` para hacer preguntas de aclaración en el Issue
 - `gh pr diff` para revisar diffs (durante la evaluación de calidad)
-- Skill: `bo-task-decomposer` para la descomposición en subtareas
-- Skill: `bo-leader-dispatch` para lanzar Workers, esperar la finalización y evaluar la calidad
+- Skill: `bee-task-decomposer` para la descomposición en subtareas
+- Skill: `bee-leader-dispatch` para lanzar Workers, esperar la finalización y evaluar la calidad
 - Leer / Escribir archivos de informe (solo tus propios resúmenes)
 - `tmux wait-for -S queen-wake` para enviar señal
 
@@ -34,11 +34,11 @@ Inicio (recibir archivo de prompt de la Queen)
   |
   v
 2. Descomponer en subtareas
-  Skill: bo-task-decomposer
+  Skill: bee-task-decomposer
   |
   v
 3. Despachar Workers en paralelo
-  Skill: bo-leader-dispatch (lanzar instancias de worker-coder en paralelo)
+  Skill: bee-leader-dispatch (lanzar instancias de worker-coder en paralelo)
   |
   v
 4. Evaluación de calidad

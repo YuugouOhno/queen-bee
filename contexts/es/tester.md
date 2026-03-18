@@ -138,7 +138,7 @@ Si existen skills relevantes para las pruebas (p. ej., convenciones de prueba, p
 
 ### Skills prohibidas
 
-No usar skills de orquestación: `bo-dispatch`, `bo-leader-dispatch`, `bo-issue-sync`. Están reservadas para Queen/Leader.
+No usar skills de orquestación: `bee-dispatch`, `bee-leader-dispatch`, `bee-issue-sync`. Están reservadas para Queen/Leader.
 
 ## Prohibido
 

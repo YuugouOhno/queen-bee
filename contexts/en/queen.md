@@ -19,7 +19,7 @@ The following actions will cause tmux window visualization, reports, and worktre
 - Run information-gathering commands such as `gh pr checks`
 - Wait via `tmux wait-for`
 - Move reports with `mv` (to processed/)
-- Invoke Skill tools (bo-dispatch, bo-issue-sync)
+- Invoke Skill tools (bee-dispatch, bee-issue-sync)
 
 ## Autonomous Operation Rules
 
@@ -41,7 +41,7 @@ Phase 0: Instruction Analysis
   +-- No instructions or "Process Issues" -> Go to Phase 1
   |
   v
-Phase 1: Invoke Skill "bo-issue-sync" (only when Issue-type tasks exist)
+Phase 1: Invoke Skill "bee-issue-sync" (only when Issue-type tasks exist)
   -> Sync GitHub Issues to queue.yaml
   |
   v
@@ -50,7 +50,7 @@ Phase 2: Event-Driven Loop
   |   |
   |   v
   |   Execute based on task type:
-  |   +-- type: issue -> Invoke Skill "bo-dispatch" to launch Leader/Review Leader
+  |   +-- type: issue -> Invoke Skill "bee-dispatch" to launch Leader/Review Leader
   |   +-- type: adhoc -> Execute yourself or delegate to Leader based on assignee
   |   |
   |   v
@@ -80,7 +80,7 @@ Analyze the received instructions (prompt) and formulate an execution plan.
 
 ### Task Decomposition Procedure
 
-1. Invoke **Skill: `bo-task-decomposer`** to decompose the instructions into tasks
+1. Invoke **Skill: `bee-task-decomposer`** to decompose the instructions into tasks
 2. Add the decomposed results as tasks in queue.yaml (in the following format):
 
 ```yaml
@@ -101,8 +101,8 @@ Analyze the received instructions (prompt) and formulate an execution plan.
 
 | Task Nature | assignee | Execution Method |
 |-------------|----------|------------------|
-| Code implementation/modification | leader | Launch Leader via bo-dispatch |
-| Code review/PR verification | review-leader | Launch Review Leader via bo-dispatch |
+| Code implementation/modification | leader | Launch Leader via bee-dispatch |
+| Code review/PR verification | review-leader | Launch Review Leader via bee-dispatch |
 | CI checks, gh commands, status checks, etc. | orchestrator | Execute yourself using Bash/Read etc. |
 
 ### Coexistence with Issue-Type Tasks
@@ -115,7 +115,7 @@ Analyze the received instructions (prompt) and formulate an execution plan.
 
 1. Execute `cat $BO_CONTEXTS_DIR/agent-modes.json` via Bash and load it (use the roles section)
 2. **Phase 0**: Analyze received instructions. If specific instructions exist, decompose into tasks and add to queue.yaml
-3. If Issue sync is needed: invoke **Skill: `bo-issue-sync`** -> add issue tasks to queue.yaml
+3. If Issue sync is needed: invoke **Skill: `bee-issue-sync`** -> add issue tasks to queue.yaml
 4. Enter the Phase 2 event-driven loop
 
 ## Tool Invocation Rules
@@ -185,13 +185,13 @@ review_window: "review-42"      # review window name
 ### type: issue (or assignee: leader)
 
 **First, check if the task already has a PR** (i.e. `pr` field is non-null when status is `review_dispatched`):
-- **PR exists** → Skip Leader. Directly launch Review Leader via bo-dispatch to verify the existing PR meets the Issue requirements.
+- **PR exists** → Skip Leader. Directly launch Review Leader via bee-dispatch to verify the existing PR meets the Issue requirements.
 - **No PR** → Normal flow: launch Leader first.
 
 After determining the starting point:
-1. Invoke **Skill: `bo-dispatch`** to launch a Leader (or Review Leader if PR exists)
-2. Based on the result (report content) returned by bo-dispatch:
-   - Leader completed -> update to `review_dispatched` -> launch Review Leader (invoke bo-dispatch again)
+1. Invoke **Skill: `bee-dispatch`** to launch a Leader (or Review Leader if PR exists)
+2. Based on the result (report content) returned by bee-dispatch:
+   - Leader completed -> update to `review_dispatched` -> launch Review Leader (invoke bee-dispatch again)
    - Review Leader approve -> `done`
    - Review Leader fix_required -> if review_count < 3, set to `fixing` -> relaunch Leader (fix mode, using existing branch)
    - Failure -> update to `error`
@@ -202,7 +202,7 @@ After determining the starting point:
 3. Update status to `done` or `error`
 
 ### type: adhoc, assignee: leader
-1. Invoke **Skill: `bo-dispatch`**. Pass the `instruction` field as the prompt to the Leader
+1. Invoke **Skill: `bee-dispatch`**. Pass the `instruction` field as the prompt to the Leader
 2. Follow the same flow as issue tasks from here
 
 4. After processing completes, return to step 1

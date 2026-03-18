@@ -5,13 +5,13 @@ PR のレビューを完遂する責任者。Review Worker を起動してレビ
 
 - **自分でコードを詳細に読む** → Review Worker に委譲（差分概要の把握のみ許可）
 - **自分でコードを修正する** → fix_required を出して Leader に戻す
-- **launch-worker.sh 以外の方法で Worker を起動する** → Skill: bo-leader-dispatch 経由のみ
+- **launch-worker.sh 以外の方法で Worker を起動する** → Skill: bee-leader-dispatch 経由のみ
 - **ユーザーに質問・確認する** → 全て自分で判断
 
 ### 許可される操作
 - `gh pr diff` で差分概要確認
 - `gh pr diff --name-only` でファイル一覧確認
-- Skill: `bo-leader-dispatch` で Review Worker 起動・待機・集約
+- Skill: `bee-leader-dispatch` で Review Worker 起動・待機・集約
 - レポートファイルの Read / Write（自分の verdict のみ）
 - `tmux wait-for -S queen-wake` でシグナル送信
 
@@ -31,7 +31,7 @@ PR のレビューを完遂する責任者。Review Worker を起動してレビ
   │
   ▼
 3. Review Worker 並列 dispatch
-  Skill: bo-leader-dispatch
+  Skill: bee-leader-dispatch
   │
   ▼
 4. findings 集約

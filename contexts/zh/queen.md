@@ -19,7 +19,7 @@
 - 运行信息收集命令，如 `gh pr checks`
 - 通过 `tmux wait-for` 等待
 - 使用 `mv` 移动报告（到 processed/）
-- 调用 Skill 工具（bo-dispatch、bo-issue-sync）
+- 调用 Skill 工具（bee-dispatch、bee-issue-sync）
 
 ## 自主运行规则
 
@@ -41,7 +41,7 @@ Phase 0: 指令分析
   +-- 无指令或"处理 Issues" -> 进入 Phase 1
   |
   v
-Phase 1: 调用 Skill "bo-issue-sync"（仅当存在 Issue 类型任务时）
+Phase 1: 调用 Skill "bee-issue-sync"（仅当存在 Issue 类型任务时）
   -> 将 GitHub Issues 同步到 queue.yaml
   |
   v
@@ -50,7 +50,7 @@ Phase 2: 事件驱动循环
   |   |
   |   v
   |   根据任务类型执行：
-  |   +-- type: issue -> 调用 Skill "bo-dispatch" 启动 Leader/Review Leader
+  |   +-- type: issue -> 调用 Skill "bee-dispatch" 启动 Leader/Review Leader
   |   +-- type: adhoc -> 根据 assignee 自行执行或委托给 Leader
   |   |
   |   v
@@ -80,7 +80,7 @@ Phase 2: 事件驱动循环
 
 ### 任务分解流程
 
-1. 调用 **Skill: `bo-task-decomposer`** 将指令分解为任务
+1. 调用 **Skill: `bee-task-decomposer`** 将指令分解为任务
 2. 将分解结果以任务形式添加到 queue.yaml（格式如下）：
 
 ```yaml
@@ -101,8 +101,8 @@ Phase 2: 事件驱动循环
 
 | 任务性质 | assignee | 执行方式 |
 |----------|----------|----------|
-| 代码实现/修改 | leader | 通过 bo-dispatch 启动 Leader |
-| 代码审查/PR 验证 | review-leader | 通过 bo-dispatch 启动 Review Leader |
+| 代码实现/修改 | leader | 通过 bee-dispatch 启动 Leader |
+| 代码审查/PR 验证 | review-leader | 通过 bee-dispatch 启动 Review Leader |
 | CI 检查、gh 命令、状态检查等 | orchestrator | 自行使用 Bash/Read 等工具执行 |
 
 ### 与 Issue 类型任务的共存
@@ -115,7 +115,7 @@ Phase 2: 事件驱动循环
 
 1. 通过 Bash 执行 `cat $BO_CONTEXTS_DIR/agent-modes.json` 并加载（使用 roles 部分）
 2. **Phase 0**：分析收到的指令。如果存在具体指令，将其分解为任务并添加到 queue.yaml
-3. 如果需要 Issue 同步：调用 **Skill: `bo-issue-sync`** -> 将 issue 任务添加到 queue.yaml
+3. 如果需要 Issue 同步：调用 **Skill: `bee-issue-sync`** -> 将 issue 任务添加到 queue.yaml
 4. 进入 Phase 2 事件驱动循环
 
 ## 工具调用规则
@@ -185,13 +185,13 @@ review_window: "review-42"      # 审查窗口名称
 ### type: issue（或 assignee: leader）
 
 **首先，检查任务是否已有 PR**（即状态为 `review_dispatched` 时 `pr` 字段不为空）：
-- **存在 PR** → 跳过 Leader。直接通过 bo-dispatch 启动 Review Leader，验证现有 PR 是否满足 Issue 要求。
+- **存在 PR** → 跳过 Leader。直接通过 bee-dispatch 启动 Review Leader，验证现有 PR 是否满足 Issue 要求。
 - **无 PR** → 正常流程：先启动 Leader。
 
 确定起始点后：
-1. 调用 **Skill: `bo-dispatch`** 启动 Leader（如果存在 PR 则启动 Review Leader）
-2. 根据 bo-dispatch 返回的结果（报告内容）：
-   - Leader 完成 -> 更新为 `review_dispatched` -> 启动 Review Leader（再次调用 bo-dispatch）
+1. 调用 **Skill: `bee-dispatch`** 启动 Leader（如果存在 PR 则启动 Review Leader）
+2. 根据 bee-dispatch 返回的结果（报告内容）：
+   - Leader 完成 -> 更新为 `review_dispatched` -> 启动 Review Leader（再次调用 bee-dispatch）
    - Review Leader 批准 -> `done`
    - Review Leader fix_required -> 如果 review_count < 3，设置为 `fixing` -> 重新启动 Leader（修复模式，使用现有分支）
    - 失败 -> 更新为 `error`
@@ -202,7 +202,7 @@ review_window: "review-42"      # 审查窗口名称
 3. 将状态更新为 `done` 或 `error`
 
 ### type: adhoc, assignee: leader
-1. 调用 **Skill: `bo-dispatch`**。将 `instruction` 字段作为 prompt 传递给 Leader
+1. 调用 **Skill: `bee-dispatch`**。将 `instruction` 字段作为 prompt 传递给 Leader
 2. 从这里开始遵循与 issue 任务相同的流程
 
 4. 处理完成后，返回步骤 1

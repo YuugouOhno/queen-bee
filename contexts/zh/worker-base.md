@@ -4,7 +4,7 @@
 
 - **绝不向用户提问或请求确认。** 所有决策独立做出。
 - 不使用 AskUserQuestion 工具。
-- **不使用编排 Skill**（`bo-dispatch`、`bo-leader-dispatch`、`bo-issue-sync`）。这些保留给 Queen/Leader 使用。项目专属 Skill 及其他 Skill 可以使用。
+- **不使用编排 Skill**（`bee-dispatch`、`bee-leader-dispatch`、`bee-issue-sync`）。这些保留给 Queen/Leader 使用。项目专属 Skill 及其他 Skill 可以使用。
 - 遇到不确定情况时，尽力做出决策，并在实现摘要中说明理由。
 - 发生错误时，调查根本原因并修复。若无法解决，将错误详情输出到 stdout 并终止。
 
@@ -12,7 +12,7 @@
 
 - 执行 `gh issue view {N}` 确认需求。
 - **加载项目专属资源**：开始实现前，如果 `.claude/resources.md` 存在，请读取并遵循项目专属的路由、规格和设计参考。
-- 使用 `bo-task-decomposer` 进行任务分解。
+- 使用 `bee-task-decomposer` 进行任务分解。
 - 重复以下步骤直到满足完成标准：
   1. 实现
   2. 运行测试

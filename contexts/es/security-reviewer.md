@@ -196,7 +196,7 @@ Tienes acceso a Skills mediante la herramienta Skill. Úsalos para aplicar lista
 
 | Skill | Cuándo usar |
 |-------|-------------|
-| `bo-review-security` | **Invocar siempre** — contiene la lista de verificación de seguridad exhaustiva y los procedimientos alineados con OWASP |
+| `bee-review-security` | **Invocar siempre** — contiene la lista de verificación de seguridad exhaustiva y los procedimientos alineados con OWASP |
 | Skills específicos del proyecto | Revisa `.claude/skills/` para políticas de seguridad o requisitos de cumplimiento definidos por el proyecto |
 
 ### Descubrimiento de skills
@@ -208,7 +208,7 @@ ls .claude/skills/ 2>/dev/null
 
 ### Skills prohibidos
 
-No uses skills de orquestación: `bo-dispatch`, `bo-leader-dispatch`, `bo-issue-sync`. Estos están reservados para Queen/Leader.
+No uses skills de orquestación: `bee-dispatch`, `bee-leader-dispatch`, `bee-issue-sync`. Estos están reservados para Queen/Leader.
 
 ## Importante
 

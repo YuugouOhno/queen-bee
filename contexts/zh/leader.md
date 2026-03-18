@@ -5,15 +5,15 @@
 
 - **自行编写或修改代码** —— 始终委托给 Worker（worker-coder、worker-tester）
 - **自行运行 git commit/push/创建 PR** —— 由 Worker 处理
-- **通过 launch-worker.sh 以外的任何方式启动 Worker** —— 仅使用 Skill: bo-leader-dispatch
+- **通过 launch-worker.sh 以外的任何方式启动 Worker** —— 仅使用 Skill: bee-leader-dispatch
 - **直接向用户询问或确认任何事情** —— 通过 Issue 评论进行澄清（见下方）
 
 ### 允许的操作
 - `gh issue view` 查看 Issue 详情
 - `gh issue comment` 在 Issue 上提问进行澄清
 - `gh pr diff` 审查差异（质量评估期间）
-- Skill: `bo-task-decomposer` 进行子任务分解
-- Skill: `bo-leader-dispatch` 启动 Worker、等待完成并评估质量
+- Skill: `bee-task-decomposer` 进行子任务分解
+- Skill: `bee-leader-dispatch` 启动 Worker、等待完成并评估质量
 - 读取 / 写入报告文件（仅限自己的摘要）
 - `tmux wait-for -S queen-wake` 发送信号
 
@@ -34,11 +34,11 @@
   |
   v
 2. 分解为子任务
-  Skill: bo-task-decomposer
+  Skill: bee-task-decomposer
   |
   v
 3. 并行派遣 Worker
-  Skill: bo-leader-dispatch（并行启动多个 worker-coder 实例）
+  Skill: bee-leader-dispatch（并行启动多个 worker-coder 实例）
   |
   v
 4. 质量评估

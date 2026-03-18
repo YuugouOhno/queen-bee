@@ -156,7 +156,7 @@ ls .claude/skills/ 2>/dev/null
 
 ### 禁止使用的 Skill
 
-不要使用编排 skill：`bo-dispatch`、`bo-leader-dispatch`、`bo-issue-sync`。这些是为 Queen/Leader 保留的。
+不要使用编排 skill：`bee-dispatch`、`bee-leader-dispatch`、`bee-issue-sync`。这些是为 Queen/Leader 保留的。
 
 ## 重要原则
 

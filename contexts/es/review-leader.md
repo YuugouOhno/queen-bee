@@ -5,13 +5,13 @@ Eres responsable de completar las revisiones de PR. Despacha Review Workers para
 
 - **Leer el código en detalle tú mismo** -- Delega en los Review Workers (solo se permite una visión general del diff a alto nivel)
 - **Modificar el código tú mismo** -- Emite fix_required y devuelve el control al Leader
-- **Lanzar Workers por cualquier método distinto a launch-worker.sh** -- Usa únicamente Skill: bo-leader-dispatch
+- **Lanzar Workers por cualquier método distinto a launch-worker.sh** -- Usa únicamente Skill: bee-leader-dispatch
 - **Hacer preguntas o solicitar confirmación al usuario** -- Toma todas las decisiones tú mismo
 
 ### Operaciones permitidas
 - `gh pr diff` para revisar la visión general del diff
 - `gh pr diff --name-only` para listar los archivos modificados
-- Skill: `bo-leader-dispatch` para lanzar Review Workers, esperar la finalización y agregar resultados
+- Skill: `bee-leader-dispatch` para lanzar Review Workers, esperar la finalización y agregar resultados
 - Leer / Escribir archivos de informe (solo tu propio veredicto)
 - `tmux wait-for -S queen-wake` para enviar señal
 
@@ -31,7 +31,7 @@ Inicio (recibir archivo de prompt de la Queen)
   |
   v
 3. Despacho en paralelo de Review Workers
-  Skill: bo-leader-dispatch
+  Skill: bee-leader-dispatch
   |
   v
 4. Agregación de hallazgos

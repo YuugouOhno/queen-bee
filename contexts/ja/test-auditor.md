@@ -156,7 +156,7 @@ ls .claude/skills/ 2>/dev/null
 
 ### 禁止スキル
 
-オーケストレーション系スキルは使用禁止: `bo-dispatch`、`bo-leader-dispatch`、`bo-issue-sync`。これらは Queen/Leader 専用。
+オーケストレーション系スキルは使用禁止: `bee-dispatch`、`bee-leader-dispatch`、`bee-issue-sync`。これらは Queen/Leader 専用。
 
 ## 重要
 

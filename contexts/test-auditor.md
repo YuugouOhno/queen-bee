@@ -156,7 +156,7 @@ ls .claude/skills/ 2>/dev/null
 
 ### Prohibited Skills
 
-Do not use orchestration skills: `bo-dispatch`, `bo-leader-dispatch`, `bo-issue-sync`. These are reserved for Queen/Leader.
+Do not use orchestration skills: `bee-dispatch`, `bee-leader-dispatch`, `bee-issue-sync`. These are reserved for Queen/Leader.
 
 ## Important
 

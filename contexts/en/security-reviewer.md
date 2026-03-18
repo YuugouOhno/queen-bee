@@ -196,7 +196,7 @@ You have access to Skills via the Skill tool. Use them to apply specialized revi
 
 | Skill | When to Use |
 |-------|-------------|
-| `bo-review-security` | **Always invoke** — contains the comprehensive security review checklist and OWASP-aligned procedures |
+| `bee-review-security` | **Always invoke** — contains the comprehensive security review checklist and OWASP-aligned procedures |
 | Project-specific skills | Check `.claude/skills/` for project-defined security policies or compliance requirements |
 
 ### Skill Discovery
@@ -208,7 +208,7 @@ ls .claude/skills/ 2>/dev/null
 
 ### Prohibited Skills
 
-Do not use orchestration skills: `bo-dispatch`, `bo-leader-dispatch`, `bo-issue-sync`. These are reserved for Queen/Leader.
+Do not use orchestration skills: `bee-dispatch`, `bee-leader-dispatch`, `bee-issue-sync`. These are reserved for Queen/Leader.
 
 ## Important
 

@@ -131,8 +131,8 @@ You are responsible for completing the implementation of GitHub Issue #${ISSUE}.
 
 ## Procedure
 1. Review the issue: gh issue view ${ISSUE} --json body,title,labels
-2. Skill: bo-task-decomposer to decompose into subtasks
-3. Skill: bo-leader-dispatch to launch Workers in parallel
+2. Skill: bee-task-decomposer to decompose into subtasks
+3. Skill: bee-leader-dispatch to launch Workers in parallel
 4. Evaluate Worker reports for quality (re-run up to 2 times if unsatisfactory)
 5. After all subtasks are complete, perform a self-critical review (read the PR diff and verify alignment with Issue requirements)
 6. Write ${REPORTS_DIR}/leader-${ISSUE}-summary.yaml
@@ -204,7 +204,7 @@ You are responsible for reviewing the PR for Issue #${ISSUE}.
 ## Procedure
 1. Review the PR diff: gh pr diff --name-only && gh pr diff
 2. Determine complexity (simple/standard/complex)
-3. Skill: bo-leader-dispatch to launch Review Workers in parallel
+3. Skill: bee-leader-dispatch to launch Review Workers in parallel
 4. Aggregate Worker findings + perform anti-sycophancy check
 5. Write ${REPORTS_DIR}/review-leader-${ISSUE}-verdict.yaml
 6. Send tmux wait-for -S queen-wake
@@ -308,7 +308,7 @@ tmux wait-for -S \$QUEEN_SIGNAL 2>/dev/null || true
 
 # Note: worktree is intentionally kept alive after Leader completion.
 # The branch is needed for PR review cycles and CI checks.
-# Cleanup happens after PR merge (managed by Queen via bo-dispatch).
+# Cleanup happens after PR merge (managed by Queen via bee-dispatch).
 
 echo "--- \$ROLE completed (exit=\$EXIT_CODE) ---"
 WRAPPER_BODY

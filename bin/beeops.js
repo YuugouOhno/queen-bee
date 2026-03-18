@@ -14,9 +14,9 @@ const HOOK_SRC = path.join(HOOKS_DIR, "bo-prompt-context.py");
 const HOME_DIR = process.env.HOME || process.env.USERPROFILE;
 
 const SKILL_NAMES = [
-  "bo-dispatch", "bo-leader-dispatch", "bo-task-decomposer", "bo-issue-sync",
-  "bo-review-backend", "bo-review-frontend", "bo-review-database",
-  "bo-review-operations", "bo-review-process", "bo-review-security",
+  "bee-dispatch", "bee-leader-dispatch", "bee-task-decomposer", "bee-issue-sync",
+  "bee-review-backend", "bee-review-frontend", "bee-review-database",
+  "bee-review-operations", "bee-review-process", "bee-review-security",
 ];
 
 function resolveSkillSrc(skillName, locale) {
@@ -447,6 +447,22 @@ async function initCore(root, opts) {
     }
   }
 
+  // Migrate legacy bo-* skill directories to bee-*
+  const LEGACY_SKILL_NAMES = [
+    "bo-dispatch", "bo-leader-dispatch", "bo-task-decomposer", "bo-issue-sync",
+    "bo-review-backend", "bo-review-frontend", "bo-review-database",
+    "bo-review-operations", "bo-review-process", "bo-review-security",
+  ];
+  for (const legacySkill of LEGACY_SKILL_NAMES) {
+    const legacyPath = path.join(claudeDir, "skills", legacySkill);
+    if (fs.existsSync(legacyPath)) {
+      const newSkill = legacySkill.replace(/^bo-/, "bee-");
+      const newPath = path.join(claudeDir, "skills", newSkill);
+      fs.rmSync(legacyPath, { recursive: true });
+      console.log(`  migrated: .claude/skills/${legacySkill}/ → ${newSkill}/`);
+    }
+  }
+
   for (const skill of SKILL_NAMES) {
     const skillKey = `skills/${skill}`;
     if (isProtected("skills") || isProtected(skillKey)) {
@@ -594,9 +610,9 @@ function check() {
 
   // Check skills
   const CORE_SKILLS = [
-    "bo-dispatch", "bo-leader-dispatch", "bo-task-decomposer", "bo-issue-sync",
-    "bo-review-backend", "bo-review-frontend", "bo-review-database",
-    "bo-review-operations", "bo-review-process", "bo-review-security",
+    "bee-dispatch", "bee-leader-dispatch", "bee-task-decomposer", "bee-issue-sync",
+    "bee-review-backend", "bee-review-frontend", "bee-review-database",
+    "bee-review-operations", "bee-review-process", "bee-review-security",
   ];
   for (const skill of CORE_SKILLS) {
     const skillPath = path.join(claudeDir, "skills", skill, "SKILL.md");

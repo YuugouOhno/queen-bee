@@ -125,10 +125,10 @@
 
 当审查 skill 可用时，根据变更文件类型调用相应的专业审查 skill：
 
-- Frontend 变更（`.tsx`、`.vue`、`.jsx`、`.css`）→ 调用 `bo-review-frontend` + `bo-review-security` skill
-- Backend 变更（`.ts`、`.py`、服务端代码）→ 调用 `bo-review-backend` + `bo-review-security` skill
-- 数据库变更（`.sql`、`prisma`、`migration`）→ 调用 `bo-review-database` + `bo-review-security` skill
-- 基础设施变更（`Dockerfile`、`k8s`、CI/CD）→ 调用 `bo-review-operations` skill
+- Frontend 变更（`.tsx`、`.vue`、`.jsx`、`.css`）→ 调用 `bee-review-frontend` + `bee-review-security` skill
+- Backend 变更（`.ts`、`.py`、服务端代码）→ 调用 `bee-review-backend` + `bee-review-security` skill
+- 数据库变更（`.sql`、`prisma`、`migration`）→ 调用 `bee-review-database` + `bee-review-security` skill
+- 基础设施变更（`Dockerfile`、`k8s`、CI/CD）→ 调用 `bee-review-operations` skill
 
 如果相关 skill 未安装，跳过路由，使用上述视角进行审查。
 

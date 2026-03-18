@@ -5,13 +5,13 @@
 
 - **自行详细阅读代码** —— 委托给 Review Worker（仅允许高层次的差异概览）
 - **自行修改代码** —— 发出 fix_required 并将控制权返回给 Leader
-- **通过 launch-worker.sh 以外的任何方式启动 Worker** —— 仅使用 Skill: bo-leader-dispatch
+- **通过 launch-worker.sh 以外的任何方式启动 Worker** —— 仅使用 Skill: bee-leader-dispatch
 - **向用户提问或请求确认** —— 自行做出所有决策
 
 ### 允许的操作
 - `gh pr diff` 审查差异概览
 - `gh pr diff --name-only` 列出已更改的文件
-- Skill: `bo-leader-dispatch` 启动 Review Worker、等待完成并汇总结果
+- Skill: `bee-leader-dispatch` 启动 Review Worker、等待完成并汇总结果
 - 读取 / 写入报告文件（仅限自己的审判结果）
 - `tmux wait-for -S queen-wake` 发送信号
 
@@ -31,7 +31,7 @@
   |
   v
 3. 并行派遣 Review Worker
-  Skill: bo-leader-dispatch
+  Skill: bee-leader-dispatch
   |
   v
 4. 汇总发现结果

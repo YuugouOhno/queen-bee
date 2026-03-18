@@ -79,19 +79,19 @@ beeops/
 │   └── default.md                       # Default context (no mode active)
 ├── skills/
 │   ├── en/                              # English locale skills
-│   │   ├── bo-dispatch/SKILL.md
+│   │   ├── bee-dispatch/SKILL.md
 │   │   └── ... (10 skills)
 │   ├── ja/                              # Japanese locale skills (add to customize)
-│   ├── bo-dispatch/SKILL.md             # Root fallback (English, backward compat)
-│   ├── bo-leader-dispatch/SKILL.md
-│   ├── bo-task-decomposer/SKILL.md
-│   ├── bo-issue-sync/SKILL.md
-│   ├── bo-review-backend/SKILL.md
-│   ├── bo-review-frontend/SKILL.md
-│   ├── bo-review-database/SKILL.md
-│   ├── bo-review-operations/SKILL.md
-│   ├── bo-review-process/SKILL.md
-│   └── bo-review-security/SKILL.md         # Security review (cross-cutting)
+│   ├── bee-dispatch/SKILL.md             # Root fallback (English, backward compat)
+│   ├── bee-leader-dispatch/SKILL.md
+│   ├── bee-task-decomposer/SKILL.md
+│   ├── bee-issue-sync/SKILL.md
+│   ├── bee-review-backend/SKILL.md
+│   ├── bee-review-frontend/SKILL.md
+│   ├── bee-review-database/SKILL.md
+│   ├── bee-review-operations/SKILL.md
+│   ├── bee-review-process/SKILL.md
+│   └── bee-review-security/SKILL.md         # Security review (cross-cutting)
 └── command/
     ├── en/bo.md                         # English /bo command
     ├── ja/bo.md                         # Japanese /bo command (add to customize)
@@ -105,16 +105,16 @@ beeops/
 ├── .claude/
 │   ├── commands/bo.md                   # /bo command
 │   ├── skills/
-│   │   ├── bo-dispatch/SKILL.md         # Queen skill
-│   │   ├── bo-leader-dispatch/SKILL.md  # Leader skill
-│   │   ├── bo-task-decomposer/SKILL.md
-│   │   ├── bo-issue-sync/SKILL.md
-│   │   ├── bo-review-backend/SKILL.md
-│   │   ├── bo-review-frontend/SKILL.md
-│   │   ├── bo-review-database/SKILL.md
-│   │   ├── bo-review-operations/SKILL.md
-│   │   ├── bo-review-process/SKILL.md
-│   │   └── bo-review-security/SKILL.md
+│   │   ├── bee-dispatch/SKILL.md         # Queen skill
+│   │   ├── bee-leader-dispatch/SKILL.md  # Leader skill
+│   │   ├── bee-task-decomposer/SKILL.md
+│   │   ├── bee-issue-sync/SKILL.md
+│   │   ├── bee-review-backend/SKILL.md
+│   │   ├── bee-review-frontend/SKILL.md
+│   │   ├── bee-review-database/SKILL.md
+│   │   ├── bee-review-operations/SKILL.md
+│   │   ├── bee-review-process/SKILL.md
+│   │   └── bee-review-security/SKILL.md
 │   ├── settings.local.json              # Hook registration (--local, default)
 │   ├── settings.json                    # Hook registration (--shared)
 │   └── beeops/
