@@ -25,7 +25,7 @@ npx beeops init
 
 ## Quick Start
 
-Run `/bo` in Claude Code to start the Queen. She'll sync GitHub Issues, dispatch Leaders to git worktrees, and manage the full workflow — from implementation through code review and CI checks.
+Run `/bee-dev` in Claude Code to start the Queen. She'll sync GitHub Issues, dispatch Leaders to git worktrees, and manage the full workflow — from implementation through code review and CI checks.
 
 ```
 Queen (orchestrator)
@@ -40,7 +40,7 @@ Queen (orchestrator)
 
 Each layer runs as a separate Claude Code instance in a tmux pane. Communication flows through YAML reports and `tmux wait-for` signals. No external servers or databases required.
 
-Attach with `tmux attach -t bo` to watch all agents work in real-time.
+Attach with `tmux attach -t bee-dev` to watch all agents work in real-time.
 
 ## Architecture
 
@@ -67,7 +67,7 @@ npx beeops init [options]
 | `--with-contexts` | Copy default context files locally for customization |
 | `--locale <lang>` | Set locale (`en` default, `ja` available) |
 
-To customize agent behavior, run `npx beeops init --with-contexts` and edit files in `.claude/beeops/contexts/`. Delete any file to fall back to the package default.
+To customize agent behavior, run `npx beeops init --with-contexts` and edit files in `.beeops/contexts/`. Delete any file to fall back to the package default.
 
 To update beeops in an existing project:
 
@@ -76,7 +76,7 @@ npm update beeops
 npx beeops init
 ```
 
-This updates the package and re-deploys commands, skills, and hooks. Your custom contexts in `.claude/beeops/contexts/` are preserved.
+This updates the package and re-deploys commands, skills, and hooks. Your custom contexts in `.beeops/contexts/` are preserved.
 
 To verify your installation:
 
