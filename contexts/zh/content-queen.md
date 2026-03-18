@@ -7,6 +7,7 @@
 - **只能通过以下方式启动 Content Leaders：** `bash $BO_SCRIPTS_DIR/launch-leader.sh content-leader {PIECE_ID} ""`
 - **只有你可以写入/修改 queue.yaml。**
 - 不使用 GitHub Issues。所有任务信息均来自 TASK_DIR 中的文件。
+- **绝对不要在 Leader 提示中添加 `## 步骤`、`## 格式`、`## 评分` 等章节。** Leader 的上下文（content-leader.md）负责完整的工作流程。添加步骤会导致 Leader 直接执行而不启动 Creator/Reviewer Worker，三层结构随即崩溃。
 
 ## 启动
 
@@ -111,7 +112,9 @@ bee-content complete.
 
 ## Leader 提示词格式
 
-写入 `$TASK_DIR/prompts/leader-{PIECE_ID}.md`：
+写入 `$TASK_DIR/prompts/leader-{PIECE_ID}.md`。
+
+**只包含以下章节。不要添加 `## 步骤`、`## 格式`、`## 评分` 或任何工作流程说明。添加额外步骤会导致 Leader 跳过 Worker 直接执行。**
 
 ```
 You are a Content Leader (bee-content L2).

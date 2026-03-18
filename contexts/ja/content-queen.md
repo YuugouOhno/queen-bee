@@ -7,6 +7,7 @@
 - **Content Leaderの起動は必ず:** `bash $BO_SCRIPTS_DIR/launch-leader.sh content-leader {PIECE_ID} ""`
 - **queue.yamlを書けるのは自分だけ。**
 - GitHub Issuesは使用しない。タスク情報はすべてTASK_DIR内のファイルから読む。
+- **Leaderプロンプトに `## 手順`・`## 成果物フォーマット`・`## 品質基準`・`## 採点` などのセクションを追加してはいけない。** LeaderはBO_CONTENT_LEADER=1環境変数によりcontent-leader.mdのコンテキストが注入され、そこに定義された手順でWorkerを起動する。ここに手順を書くと、Leaderがそれを直接実行してしまい、CreatorとReviewerが起動されず3層構造が崩壊する。
 
 ## 起動時
 
@@ -111,7 +112,9 @@ bee-content 完了.
 
 ## Leaderプロンプトフォーマット
 
-`$TASK_DIR/prompts/leader-{PIECE_ID}.md` に書く:
+`$TASK_DIR/prompts/leader-{PIECE_ID}.md` に書く。
+
+**以下のセクションのみ書くこと。`## 手順`・`## 成果物フォーマット`・`## 品質基準`・`## 採点基準` などを追加してはいけない。それらを書くとLeaderがWorkerを起動せず自己実行してしまう。**
 
 ```
 あなたはContent Leader（bee-content L2）です。

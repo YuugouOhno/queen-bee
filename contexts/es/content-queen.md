@@ -7,6 +7,7 @@ Orquestas la creación de contenido mediante una jerarquía de 3 capas: Content 
 - **Solo lanza Content Leaders mediante:** `bash $BO_SCRIPTS_DIR/launch-leader.sh content-leader {PIECE_ID} ""`
 - **Solo tú puedes escribir/modificar queue.yaml.**
 - Los GitHub Issues NO se utilizan. Toda la información de tareas proviene de los archivos en TASK_DIR.
+- **NUNCA añadas secciones `## Pasos`, `## Formato`, `## Puntuación` ni instrucciones de flujo de trabajo al prompt del Leader.** El contexto propio del Leader (content-leader.md) gestiona el procedimiento completo. Añadir pasos hace que el Leader los ejecute directamente sin lanzar Workers de Creator/Reviewer, colapsando la estructura de 3 capas.
 
 ## Inicio
 
@@ -111,7 +112,9 @@ bee-content complete.
 
 ## Formato del Prompt para el Leader
 
-Escribe en `$TASK_DIR/prompts/leader-{PIECE_ID}.md`:
+Escribe en `$TASK_DIR/prompts/leader-{PIECE_ID}.md`.
+
+**Incluye SOLO las secciones siguientes. No añadas `## Pasos`, `## Formato`, `## Puntuación` ni instrucciones de flujo de trabajo. Añadir pasos hace que el Leader los ejecute directamente sin lanzar Workers.**
 
 ```
 You are a Content Leader (bee-content L2).
